@@ -100,7 +100,7 @@ To balance this reaction, we will need 4 coefficients, one for each compound:
 $$x_1 \\cdot C_3H_7OH + x_2 \\cdot O_2 \\rightarrow x_3 \\cdot CO_2 + x_4 \\cdot H_2O$$
 
 Because this reaction conatins 3 elements (C, H, and O), we will need three equations. One to balance each of them.
-Replace the corresponding lines in the cell below to balance the reaction 
+Replace the corresponding lines in the cell below to balance the reaction.
 '''
 
 REACTION2_CODE = '''
@@ -113,11 +113,10 @@ x2 = Int('x2') # Coefficient of O2
 x3 = Int('x3') # Coefficient of CO2
 x4 = Int('x4') # Coefficient of H2O
 
-# REPLACE THE LINES BELOW
+# REPLACE THE THREE LINES BELOW
 s.add( False ) # Balance carbon
 s.add( False ) # Balance hydrogen
 s.add( False ) # Balance oxygen
-
 
 # Ensure each coefficient is positive!
 s.add( x1 >= 1 )
