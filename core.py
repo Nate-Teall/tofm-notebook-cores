@@ -80,17 +80,26 @@ showSolver( s ) # View the equations
 print( s.check() ) # check if solution exists
 '''
 
+REACTION1_OUTRO = '''
+Great! Now we have successfully balanced the reaction:
+
+$$2H_2 + O_2 \\rightarrow 2H_2O$$
+
+Next, let's balance a more complex reaction:
+
+'''
+
 ### Build the notebook ###
 mynotebook = nbf.v4.new_notebook()
 
-mynotebook['cells'] = [nbf.v4.new_code_cell(IMPORTS),
-                       nbf.v4.new_markdown_cell(SYSTEM_OF_EQUATIONS_TEXT),
+mynotebook['cells'] = [nbf.v4.new_markdown_cell(SYSTEM_OF_EQUATIONS_TEXT),
                        nbf.v4.new_code_cell(SYSTEM_OF_EQUATIONS_CODE),
                        nbf.v4.new_code_cell(CHECK),
                        nbf.v4.new_code_cell(MODEL),
                        nbf.v4.new_markdown_cell(REACTION1_TEXT),
                        nbf.v4.new_code_cell(REACTION1_CODE),
-                       nbf.v4.new_code_cell(MODEL)]
+                       nbf.v4.new_code_cell(MODEL),
+                       nbf.v4.new_markdown_cell(REACTION1_OUTRO)]
 
 nbf.validator.normalize( mynotebook )
 nbf.validate( mynotebook )
