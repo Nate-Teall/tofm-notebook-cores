@@ -8,7 +8,7 @@ from tofmcore import showSolver
 '''
 
 # This cell was taken from the ASYMPTOTIC-BOUNDS notebook.
-# It is not included within the IntegerConstraints core, but thought it would fit well
+# It is not included within the IntegerConstraints core, but thought it would fit well to introduce the concept
 SYSTEM_OF_EQUATIONS_TEXT = '''
 Now it's your turn! Replace lines in the code below to find a solution to the following system of equations:
 
@@ -39,10 +39,11 @@ REACTION1_TEXT = '''
 
 Now that we know how to solve systems of equations using Z3, lets use this to balance the following reaction:
 
+$$H_2 + O_2 \\rightarrow H_2O$$
+
+To balance the reaction, we need to find coefficients x for each compound that balances all elements.
+
 $$x_1 \\cdot H_2 + x_2 \\cdot O_2 \\rightarrow x_3 \\cdot H_2O$$
-
-To balance the reaction, we need to find the values for each coefficient x that balances each element.
-
 
 Because O<sub>2</sub> contains twice as many oxygen atoms as H<sub>2</sub>O, the coefficient for H<sub>2</sub>O must be twice as big as the coefficient for O<sub>2</sub>.
 So, to balance oxygen we can use the equation:
@@ -67,10 +68,16 @@ x1 = Int('x1')
 x2 = Int('x2')
 x3 = Int('x3')
 
+# Ensure each coefficient is positive!
+s.add( x1 >= 1 )
+s.add( x2 >= 1 )
+s.add( x3 >= 1 )
+
 s.add( 2*x2 == x3 ) # Add the equation to balance oxygen
 s.add( 2*x1 == 2*x3 ) # Add the equation to balance hydrogen
 
 showSolver( s ) # View the equations
+print( s.check() ) # check if solution exists
 '''
 
 ### Build the notebook ###
@@ -83,7 +90,6 @@ mynotebook['cells'] = [nbf.v4.new_code_cell(IMPORTS),
                        nbf.v4.new_code_cell(MODEL),
                        nbf.v4.new_markdown_cell(REACTION1_TEXT),
                        nbf.v4.new_code_cell(REACTION1_CODE),
-                       nbf.v4.new_code_cell(CHECK),
                        nbf.v4.new_code_cell(MODEL)]
 
 nbf.validator.normalize( mynotebook )
