@@ -1,5 +1,4 @@
 import nbformat as nbf
-import requests
 
 IMPORTS = '''!pip install z3-solver
 !pip install git+https://github.com/crrivero/FormalMethodsTasting.git#subdirectory=core
@@ -10,7 +9,7 @@ from tofmcore import showSolver
 # This cell was taken from the ASYMPTOTIC-BOUNDS notebook.
 # It is not included within the IntegerConstraints core, but thought it would fit well to introduce the concept
 SYSTEM_OF_EQUATIONS_TEXT = '''
-Now it's your turn! Replace lines in the code below to find a solution to the following system of equations:
+Let's try an example with multiple equations. Replace lines in the code below to find a solution to the following system of equations:
 
 $$x + 4y = 20$$
 $$2x + 3y = 10$$
@@ -41,7 +40,7 @@ Now that we know how to solve systems of equations using Z3, lets use this to ba
 
 $$H_2 + O_2 \\rightarrow H_2O$$
 
-To balance the reaction, we need to find coefficients x for each compound that balances all elements.
+To balance the reaction, we need to find coefficients x<sub>i</sub> for each compound that balances all elements.
 
 $$x_1 \\cdot H_2 + x_2 \\cdot O_2 \\rightarrow x_3 \\cdot H_2O$$
 
@@ -64,29 +63,70 @@ REACTION1_CODE = '''
 s = Solver()
 
 # Initialize variables
-x1 = Int('x1')
-x2 = Int('x2')
-x3 = Int('x3')
+x1 = Int('x1') # Coefficient of H2
+x2 = Int('x2') # Coefficient of O2
+x3 = Int('x3') # Coefficient of H2O
+
+# Add the equation to balance oxygen
+s.add( 2*x2 == x3 ) 
+
+# Add the equation to balance hydrogen
+s.add( False ) # REPLACE THIS LINE
 
 # Ensure each coefficient is positive!
 s.add( x1 >= 1 )
 s.add( x2 >= 1 )
 s.add( x3 >= 1 )
 
-s.add( 2*x2 == x3 ) # Add the equation to balance oxygen
-s.add( 2*x1 == 2*x3 ) # Add the equation to balance hydrogen
-
 showSolver( s ) # View the equations
-print( s.check() ) # check if solution exists
+print( s.check() ) # Check if solution exists
 '''
 
 REACTION1_OUTRO = '''
-Great! Now we have successfully balanced the reaction:
+Great! You have successfully balanced the reaction:
 
 $$2H_2 + O_2 \\rightarrow 2H_2O$$
+'''
 
-Next, let's balance a more complex reaction:
+REACTION2_TEXT = '''
+## Combustion of Propanol
 
+Next, let's balance a more complex reaction, the combustion of propanol:
+
+$$C_3H_7OH + O_2 \\rightarrow CO_2 + H_2O$$
+
+To balance this reaction, we will need 4 coefficients, one for each compound:
+
+$$x_1 \\cdot C_3H_7OH + x_2 \\cdot O_2 \\rightarrow x_3 \\cdot CO_2 + x_4 \\cdot H_2O$$
+
+Because this reaction conatins 3 elements (C, H, and O), we will need three equations. One to balance each of them.
+Replace the corresponding lines in the cell below to balance the reaction 
+'''
+
+REACTION2_CODE = '''
+# Initialize Z3 solver
+s = Solver()
+
+# Initialize variables
+x1 = Int('x1') # Coefficient of Propanol
+x2 = Int('x2') # Coefficient of O2
+x3 = Int('x3') # Coefficient of CO2
+x4 = Int('x4') # Coefficient of H2O
+
+# REPLACE THE LINES BELOW
+s.add( False ) # Balance carbon
+s.add( False ) # Balance hydrogen
+s.add( False ) # Balance oxygen
+
+
+# Ensure each coefficient is positive!
+s.add( x1 >= 1 )
+s.add( x2 >= 1 )
+s.add( x3 >= 1 )
+s.add( x4 >= 1 )
+
+showSolver( s ) # View the equations
+print( s.check() ) # check if solution exists
 '''
 
 ### Build the notebook ###
@@ -99,7 +139,10 @@ mynotebook['cells'] = [nbf.v4.new_markdown_cell(SYSTEM_OF_EQUATIONS_TEXT),
                        nbf.v4.new_markdown_cell(REACTION1_TEXT),
                        nbf.v4.new_code_cell(REACTION1_CODE),
                        nbf.v4.new_code_cell(MODEL),
-                       nbf.v4.new_markdown_cell(REACTION1_OUTRO)]
+                       nbf.v4.new_markdown_cell(REACTION1_OUTRO),
+                       nbf.v4.new_markdown_cell(REACTION2_TEXT),
+                       nbf.v4.new_code_cell(REACTION2_CODE),
+                       nbf.v4.new_code_cell(MODEL)]
 
 nbf.validator.normalize( mynotebook )
 nbf.validate( mynotebook )
