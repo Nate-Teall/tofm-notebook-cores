@@ -28,8 +28,8 @@ s.add( False ) # REPLACE THIS LINE
 showSolver( s ) # view the equations
 '''
 
-SYSTEM_OF_EQUATIONS_CHECK = '''print( s.check() ) # check if solution exists'''
-SYSTEM_OF_EQUATIONS_MODEL = '''print( s.model() ) # output solution'''
+CHECK = '''print( s.check() ) # check if solution exists'''
+MODEL = '''print( s.model() ) # output solution'''
 
 REACTION1_TEXT = '''
 ## Reaction Balancing using Z3
@@ -44,15 +44,28 @@ To balance the reaction, we need to find the values for each coefficient x that 
 Because O<sub>2</sub> contains twice as many oxygen atoms as H<sub>2</sub>O, the coefficient for H<sub>2</sub>O must be twice as big as the coefficient for O<sub>2</sub>.
 So, to balance oxygen we can use the equation:
 
-$$x<sub>2</sub> * 2 = x<sub>3</sub>
+$$2 * x<sub>2</sub> = x<sub>3</sub>
 
 Similarly, we can use this equation to balance hydrogen:
 
-$$x<sub>1</sub> * 2 = x<sub>3</sub> * 2
+$$2 * x<sub>1</sub = 2 * x<sub>3</sub>
 
 Let's use Z3 to find the coefficients.
 '''
 
+# It might be more clear if we name the coefficients after the compound they are connected to,
+# instead of x1, x2, etc...
 REACTION1_CODE = '''
+# Initialize Z3 solver
+s = Solver()
 
+# Initialize variables
+x1 = Int('x1')
+x2 = Int('x2')
+x3 = Int('x3')
+
+s.add( 2*x2 == x3 ) # Add the equation to balance oxygen
+s.add( 2*x1 == 2*x3 ) # Add the equation to balance hydrogen
+
+showSolver( s ) # View the equations
 '''
