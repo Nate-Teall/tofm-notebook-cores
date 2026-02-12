@@ -44,8 +44,7 @@ To balance the reaction, we need to find coefficients x<sub>i</sub> for each com
 
 $$x_1 \\cdot H_2 + x_2 \\cdot O_2 \\rightarrow x_3 \\cdot H_2O$$
 
-Because O<sub>2</sub> contains twice as many oxygen atoms as H<sub>2</sub>O, the coefficient for H<sub>2</sub>O must be twice as big as the coefficient for O<sub>2</sub>.
-So, to balance oxygen we can use the equation:
+To balance oxygen, the number of atoms of oxygen must be the same on both sides of the reaction. So, we will use this equation to model the amount on each side. 
 
 $$2 \\cdot x_2 = x_3$$
 
