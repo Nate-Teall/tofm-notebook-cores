@@ -54,9 +54,88 @@ $$g(x) = x^2$$
 </center>
 
 Note that when $x \geq 4$, we have $g(x) \geq f(x)$. Let's see how we can prove this using Z3.
+
+Formally, we have to show the following:
+$$\\forall x : x \geq 4 \implies x^2 \geq 4x$$
+
+i.e., for every real $x$, $x \geq 4$ implies that $x^2 \geq 4x$. Let's see how we can encode this using Z3.
+'''
+COMPARE_F_G_CODE = '''
+# Initialize Z3 solver
+s = Solver()
+
+# Initialize variables
+
+x = Real('x')
+
+# Initialize Functions
+
+f = 4*x
+g = pow( x, 2 ) # pow(x,y) is equivalent to x^y
+
+# Construct constraint
+
+impliesConstraint = Implies( x >= 4, g >= f )
+# Implies( a, b ) is equivalent to "a ==> b"
+
+forAllConstraint = ForAll( x, impliesConstraint )
+# ForAll( a, b ) is equivalent to "For All a : b"
+
+s.add( forAllConstraint  ) # add the constraint
+
+showSolver( s ) # view the constraint
 '''
 
+COMPARE_F_G_TEXT2 = '''
+Recall that "sat" means that Z3 has verified the statement for us, so we have succesfully proven that $\\forall x : x \geq 4 \implies x^2 \geq 4x$ !
+**Now try it yourself! Complete the code below to show that for all values of $x$ in the range $[0,4]$, we have $4x \geq x^2$.**
+'''
 
+COMPARE_F_G_CODE2 = '''
+# Initialize Z3 solver
+s = Solver()
+
+# Initialize variables
+
+x = Real('x')
+
+# Initialize Functions
+
+f = 4*x
+g = pow( x, 2 )
+
+# Construct constraint
+
+xRangeConstraint = And( x >= 0, x <= 4 )
+# And(a,b) is equivalent to "a and b"
+
+impliesConstraint = Implies( xRangeConstraint, False ) # REPLACE THIS LINE
+
+forAllConstraint = ForAll( x, False ) # REPLACE THIS LINE
+
+s.add( forAllConstraint  ) # add the constraint
+
+showSolver( s ) # view the constraint
+s.check()
+'''
+
+### Master Theorem ###
+
+MASTER_THEOREM_INTRO = '''
+## Applying the Master Theorem in Z3
+
+Recall that the Master Theorem can be used to determine the time complexity, T(n), of divide an conquer algorithms:
+
+$$ T(n) = a T(\\frac{n}{b}) + f(n) $$
+
+Here, f(n) is the time complexity of splitting the problem into smaller parts and combining the solutions.
+The Master Theorem lets us determine the overall complexity of the function, by analyzing the complexity of f(n).
+
+1. If $ f(n) = O(n^{log_ba-\epsilon}) $, then $ T(n) = \Theta(log_ba) $ 
+2. If 
+
+
+'''
 
 ### Build the notebook ###
 mynotebook = nbf.v4.new_notebook()
@@ -65,8 +144,11 @@ mynotebook['cells'] = [nbf.v4.new_markdown_cell(SYSTEM_OF_EQUATIONS_TEXT),
                        nbf.v4.new_code_cell(SYSTEM_OF_EQUATIONS_CODE),
                        nbf.v4.new_code_cell(CHECK),
                        nbf.v4.new_code_cell(MODEL),
-                       nbf.v4.new_markdown_cell(COMPARE_F_G_TEXT)]
+                       nbf.v4.new_markdown_cell(COMPARE_F_G_TEXT),
+                       nbf.v4.new_code_cell(COMPARE_F_G_CODE),
+                       nbf.v4.new_code_cell(CHECK),
+                       nbf.v4.new_markdown_cell(MASTER_THEOREM_INTRO)]
 
 nbf.validator.normalize( mynotebook )
 nbf.validate( mynotebook )
-nbf.write( mynotebook, "MASTER-THEOREM-CORE.ipynb" )
+nbf.write( mynotebook, "master-theorem/MASTER-THEOREM-CORE.ipynb" )

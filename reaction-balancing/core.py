@@ -144,4 +144,4 @@ mynotebook['cells'] = [nbf.v4.new_markdown_cell(SYSTEM_OF_EQUATIONS_TEXT),
 
 nbf.validator.normalize( mynotebook )
 nbf.validate( mynotebook )
-nbf.write( mynotebook, "REACTION-CORE.ipynb" )
+nbf.write( mynotebook, "reaction-balancing/REACTION-CORE.ipynb" )
