@@ -122,6 +122,8 @@ s.check()
 
 ### Master Theorem ###
 
+# I'm not sure if it would be nicer to have the example be a more familiar algorithm, like merge sort, 
+# but that is a pretty trivial case
 MASTER_THEOREM_INTRO = '''
 ## Applying the Master Theorem in Z3
 
@@ -141,8 +143,6 @@ Where $\epsilon$ is some constant > 0
 Now, we will use Z3 to determine the time complexity of some algorithm. The recurrence relation we will be using is:
 
 $$ T(n) = 8T(\\frac{n}{4}) + n^{1.5} $$
-
-This gives us $ f(n) = n^{1.5} $, and $ n^{log_ba} = n^{log_48} $. All that is left is for us to determine the complexity of each.
 
 ### Checking Case 1
 
@@ -171,15 +171,75 @@ def bigO( f, g ):
   return s.check() == sat
 '''
 
-BIG_O_TEXT = '''
-**Replace the lines in the code below** to determine if $ f(n) = O(g(n)) $. Remember, $ f(n) = n^{1.5} $, and $ g(n) = n^{log_48} $.
+CASE_2_TEXT = '''
+### Checking Case 2 and 3
+
+Now that we have written a function to test case 1, we will now write one to check case 2 and 3. 
+
+Recall that $ f = \Theta(g) $ if BOTH $ f = O(g) $ and $ f = \Omega(g) $ are true. 
+
+For two functions $f(n)$ and $g(n)$ we say that $f(n)=\\Omega(g(n))$ if and only if there exist constants $c$ and $n_0$ such that
+
+$$\\forall n : n \\geq n_0 \\implies f(n) \\geq c \\cdot g(n)$$
+**Complete the code below to make a function that shows $f(n)=\\Omega(g(n))$ as in the function above:**
 '''
 
-BIG_O_TEST = '''
-n = Real( 'n' )
+OMEGA_CODE = '''
+def makeBigOmegaSolver( f, g ):
+  n, c, n0 = Reals('n c n_0')
+
+  # Constraints
+  c_positive = c > 0
+  big_omega_condition = ForAll( n , False ) # REPLACE THIS LINE
+
+  s = Solver()
+  s.add( c_positive )
+  s.add( big_omega_condition )
+  return s
+
+def bigOmega( f, g ):
+  s = makeBigOmegaSolver( f, g )
+  return s.check() == sat
+'''
+
+MASTER_THEOREM_TEXT = '''
+### Putting it All Together
+
+Finally, we can write a function to determine which case of the master theorem applies to our algorithm.
+
+Remember, the recurrence relation is:
+
+$$ T(n) = 8T(\\frac{n}{4}) + n^{1.5} $$
+
+**Complete the code below** by filling in the correct values for a, b and f(n).
+'''
+
+MASTER_THEOREM_CODE = '''
+def masterTheoremSolver( n, a, b, f ):
+  g = pow( n, log(a, b))
+
+  isBigO = bigO( f, g )
+  isBigOmega = bigOmega( f, g )
+  isTheta = isBigO and isBigOmega
+
+  if isTheta:
+    print("Case 2!")
+  elif isBigO:
+    print("Case 1!") 
+  elif isBigOmega:
+    print("Case 3!") 
+
+a = False     # REPLACE THIS LINE
+b = False     # REPLACE THIS LINE
 f = pow(0, 0) # REPLACE THIS LINE
-g = pow(n, log(8, 4))
-print( bigO( f, g ) )
+n = Real( 'n' )
+masterTheoremSolver( n, a, b, f )
+'''
+
+OUTRO = '''
+Now we have determined that $ f(n) = \Theta(n^{log_ba}) $. 
+
+Since case 2 applies, you have now proven that $ T(n) = \Theta(n^{1.5} \cdot logn) $ ! 
 '''
 
 ### Build the notebook ###
@@ -194,8 +254,11 @@ mynotebook['cells'] = [nbf.v4.new_markdown_cell(SYSTEM_OF_EQUATIONS_TEXT),
                        nbf.v4.new_code_cell(CHECK),
                        nbf.v4.new_markdown_cell(MASTER_THEOREM_INTRO),
                        nbf.v4.new_code_cell(BIG_O_CODE),
-                       nbf.v4.new_markdown_cell(BIG_O_TEXT),
-                       nbf.v4.new_code_cell(BIG_O_TEST)]
+                       nbf.v4.new_markdown_cell(CASE_2_TEXT),
+                       nbf.v4.new_code_cell(OMEGA_CODE),
+                       nbf.v4.new_markdown_cell(MASTER_THEOREM_TEXT),
+                       nbf.v4.new_code_cell(MASTER_THEOREM_CODE),
+                       nbf.v4.new_markdown_cell(OUTRO)]
 
 nbf.validator.normalize( mynotebook )
 nbf.validate( mynotebook )
