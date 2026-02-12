@@ -5,6 +5,7 @@ IMPORTS = '''!pip install z3-solver
 !pip install git+https://github.com/crrivero/FormalMethodsTasting.git#subdirectory=core
 from z3 import *
 from tofmcore import showSolver
+from math import log
 '''
 
 # Get image data
@@ -18,7 +19,7 @@ image_uri = f"data:image/png;base64,{encoded_plot}"
 # The first few tutorial cells were taken from the ASYMPTOTIC-BOUNDS notebook.
 # It is not included within the IntegerConstraints core, but thought it would fit well to introduce the concept
 SYSTEM_OF_EQUATIONS_TEXT = '''
-Now it's your turn! Now it's your turn! **Replace lines in the code below** to find a solution to the following system of equations:
+Now it's your turn! **Replace lines in the code below** to find a solution to the following system of equations:
 
 $$x + 4y = 20$$
 $$2x + 3y = 10$$
@@ -128,13 +129,57 @@ Recall that the Master Theorem can be used to determine the time complexity, T(n
 
 $$ T(n) = a T(\\frac{n}{b}) + f(n) $$
 
-Here, f(n) is the time complexity of splitting the problem into smaller parts and combining the solutions.
-The Master Theorem lets us determine the overall complexity of the function, by analyzing the complexity of f(n).
+Here, f(n) is the time complexity of combining the solutions of each smaller part.
+The Master Theorem lets us determine the overall complexity of the function, by comparing the complexity of f(n) to the number of recursive calls the algorithm makes.
 
-1. If $ f(n) = O(n^{log_ba-\epsilon}) $, then $ T(n) = \Theta(log_ba) $ 
-2. If 
+1. If $ f(n) = O(n^{log_ba-\epsilon}) $, then $ T(n) = \Theta(n^{log_ba}) $ 
+2. If $ f(n) = \Theta(n^{log_ba}) $, then $ T(n) = \Theta(n^{log_ba} \cdot logn) $ 
+3. If $ f(n) = \Omega(n^{log_ba-\epsilon}) $, then $ T(n) = \Theta(f(n)) $
 
+Where $\epsilon$ is some constant > 0
 
+Now, we will use Z3 to determine the time complexity of some algorithm. The recurrence relation we will be using is:
+
+$$ T(n) = 8T(\\frac{n}{4}) + n^{1.5} $$
+
+This gives us $ f(n) = n^{1.5} $, and $ n^{log_ba} = n^{log_48} $. All that is left is for us to determine the complexity of each.
+
+### Checking Case 1
+
+Recall that for two functions $f(n)$ and $g(n)$ we say that $f(n)=O(g(n))$ if and only if there exist constants $c$ and $n_0$ such that
+
+$$\\forall n : n \\geq n_0 \\implies c \\cdot g(n) \\geq f(n)$$
+
+Using Z3's capabilities that we explored above, we have made the following function to check whether $f(n)=O(g(n))$ given two functions $f$ and $g$ in terms of $n$.
+'''
+
+BIG_O_CODE = '''
+def makeBigOSolver( f, g ):
+  n, c, n0 = Reals('n c n_0')
+
+  # Constraints
+  c_positive = c > 0
+  big_o_condition = ForAll( n , Implies( n >= n0 , c*g >= f ) )
+
+  s = Solver()
+  s.add( c_positive )
+  s.add( big_o_condition )
+  return s
+
+def bigO( f, g ):
+  s = makeBigOSolver( f, g )
+  return s.check() == sat
+'''
+
+BIG_O_TEXT = '''
+**Replace the lines in the code below** to determine if $ f(n) = O(g(n)) $. Remember, $ f(n) = n^{1.5} $, and $ g(n) = n^{log_48} $.
+'''
+
+BIG_O_TEST = '''
+n = Real( 'n' )
+f = pow(0, 0) # REPLACE THIS LINE
+g = pow(n, log(8, 4))
+print( bigO( f, g ) )
 '''
 
 ### Build the notebook ###
@@ -147,7 +192,10 @@ mynotebook['cells'] = [nbf.v4.new_markdown_cell(SYSTEM_OF_EQUATIONS_TEXT),
                        nbf.v4.new_markdown_cell(COMPARE_F_G_TEXT),
                        nbf.v4.new_code_cell(COMPARE_F_G_CODE),
                        nbf.v4.new_code_cell(CHECK),
-                       nbf.v4.new_markdown_cell(MASTER_THEOREM_INTRO)]
+                       nbf.v4.new_markdown_cell(MASTER_THEOREM_INTRO),
+                       nbf.v4.new_code_cell(BIG_O_CODE),
+                       nbf.v4.new_markdown_cell(BIG_O_TEXT),
+                       nbf.v4.new_code_cell(BIG_O_TEST)]
 
 nbf.validator.normalize( mynotebook )
 nbf.validate( mynotebook )
