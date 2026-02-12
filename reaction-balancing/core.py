@@ -9,7 +9,7 @@ from tofmcore import showSolver
 # This cell was taken from the ASYMPTOTIC-BOUNDS notebook.
 # It is not included within the IntegerConstraints core, but thought it would fit well to introduce the concept
 SYSTEM_OF_EQUATIONS_TEXT = '''
-Let's try an example with multiple equations. Replace lines in the code below to find a solution to the following system of equations:
+Let's try an example with multiple equations. **Replace lines in the code below** to find a solution to the following system of equations:
 
 $$x + 4y = 20$$
 $$2x + 3y = 10$$
@@ -52,7 +52,7 @@ Similarly, we can use this equation to balance hydrogen:
 
 $$2 \\cdot x_1 = 2 \\cdot x_3$$
 
-Let's use Z3 to find the coefficients.
+**Replace the line in the code below** to use Z3 to find the coefficients. 
 '''
 
 # It might be more clear if we name the coefficients after the compound they are connected to,
@@ -99,7 +99,7 @@ To balance this reaction, we will need 4 coefficients, one for each compound:
 $$x_1 \\cdot C_3H_7OH + x_2 \\cdot O_2 \\rightarrow x_3 \\cdot CO_2 + x_4 \\cdot H_2O$$
 
 Because this reaction conatins 3 elements (C, H, and O), we will need three equations. One to balance each of them.
-Replace the corresponding lines in the cell below to balance the reaction.
+**Replace the corresponding lines in the cell below** to balance the reaction.
 '''
 
 REACTION2_CODE = '''
