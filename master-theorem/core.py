@@ -223,8 +223,7 @@ Since case 2 applies, you have now proven that $ T(n) = \Theta(n^{1.5} \cdot log
 ### Build the notebook ###
 mynotebook = nbf.v4.new_notebook()
 
-mynotebook['cells'] = [nbf.v4.new_code_cell(IMPORTS),
-                       nbf.v4.new_markdown_cell(COMPARE_F_G_TEXT),
+mynotebook['cells'] = [nbf.v4.new_markdown_cell(COMPARE_F_G_TEXT),
                        nbf.v4.new_code_cell(COMPARE_F_G_CODE),
                        nbf.v4.new_code_cell(CHECK),
                        nbf.v4.new_markdown_cell(COMPARE_F_G_TEXT2),
