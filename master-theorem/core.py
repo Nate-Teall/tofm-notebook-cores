@@ -207,10 +207,10 @@ def masterTheoremSolver( n, a, b, f ):
   elif isBigOmega:
     print("f = Omega(g), Case 3!") 
 
+n = Real( 'n' )
 a = False     # REPLACE THIS LINE
 b = False     # REPLACE THIS LINE
 f = pow(0, 0) # REPLACE THIS LINE
-n = Real( 'n' )
 masterTheoremSolver( n, a, b, f )
 '''
 
