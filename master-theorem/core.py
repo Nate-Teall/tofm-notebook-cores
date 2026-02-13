@@ -17,32 +17,6 @@ with open("master-theorem/plot.png", "rb") as f:
 image_uri = f"data:image/png;base64,{encoded_plot}"
 
 # The first few tutorial cells were taken from the ASYMPTOTIC-BOUNDS notebook.
-# It is not included within the IntegerConstraints core, but thought it would fit well to introduce the concept
-SYSTEM_OF_EQUATIONS_TEXT = '''
-Now it's your turn! **Replace lines in the code below** to find a solution to the following system of equations:
-
-$$x + 4y = 20$$
-$$2x + 3y = 10$$
-'''
-
-SYSTEM_OF_EQUATIONS_CODE = '''
-# Initialize Z3 solver
-s = Solver()
-
-# Initialize variables
-
-x = Real('x')
-y = Real('y')
-
-s.add( x + 4*y == 20 ) # add the first equation
-s.add( False ) # REPLACE THIS LINE
-
-showSolver( s ) # view the equations
-'''
-
-CHECK = '''print( s.check() ) # check if solution exists'''
-MODEL = '''print( s.model() ) # output solution'''
-
 COMPARE_F_G_TEXT = f'''
 Let's look at a slightly more complicated example of what we can achieve with Z3. Consider the following two functions which have also been plotted below:
 $$f(x) = 4x$$
@@ -86,6 +60,8 @@ s.add( forAllConstraint  ) # add the constraint
 
 showSolver( s ) # view the constraint
 '''
+
+CHECK = '''print( s.check() ) # check if true'''
 
 COMPARE_F_G_TEXT2 = '''
 Recall that "sat" means that Z3 has verified the statement for us, so we have succesfully proven that $\\forall x : x \geq 4 \implies x^2 \geq 4x$ !
@@ -143,7 +119,9 @@ Where $\epsilon$ is some constant > 0
 Now, we will use Z3 to determine the time complexity of some algorithm. The recurrence relation we will be using is:
 
 $$ T(n) = 8T(\\frac{n}{4}) + n^{1.5} $$
+'''
 
+CASE_1_TEXT = '''
 ### Checking Case 1
 
 Recall that for two functions $f(n)$ and $g(n)$ we say that $f(n)=O(g(n))$ if and only if there exist constants $c$ and $n_0$ such that
@@ -216,18 +194,18 @@ $$ T(n) = 8T(\\frac{n}{4}) + n^{1.5} $$
 
 MASTER_THEOREM_CODE = '''
 def masterTheoremSolver( n, a, b, f ):
-  g = pow( n, log(a, b))
+  g = pow( n, log(a, b) )
 
   isBigO = bigO( f, g )
   isBigOmega = bigOmega( f, g )
   isTheta = isBigO and isBigOmega
 
   if isTheta:
-    print("Case 2!")
+    print("f = Theta(g), Case 2!")
   elif isBigO:
-    print("Case 1!") 
+    print("f = O(g), Case 1!") 
   elif isBigOmega:
-    print("Case 3!") 
+    print("f = Omega(g), Case 3!") 
 
 a = False     # REPLACE THIS LINE
 b = False     # REPLACE THIS LINE
@@ -245,14 +223,14 @@ Since case 2 applies, you have now proven that $ T(n) = \Theta(n^{1.5} \cdot log
 ### Build the notebook ###
 mynotebook = nbf.v4.new_notebook()
 
-mynotebook['cells'] = [nbf.v4.new_markdown_cell(SYSTEM_OF_EQUATIONS_TEXT),
-                       nbf.v4.new_code_cell(SYSTEM_OF_EQUATIONS_CODE),
-                       nbf.v4.new_code_cell(CHECK),
-                       nbf.v4.new_code_cell(MODEL),
+mynotebook['cells'] = [nbf.v4.new_code_cell(IMPORTS),
                        nbf.v4.new_markdown_cell(COMPARE_F_G_TEXT),
                        nbf.v4.new_code_cell(COMPARE_F_G_CODE),
                        nbf.v4.new_code_cell(CHECK),
+                       nbf.v4.new_markdown_cell(COMPARE_F_G_TEXT2),
+                       nbf.v4.new_code_cell(COMPARE_F_G_CODE2),
                        nbf.v4.new_markdown_cell(MASTER_THEOREM_INTRO),
+                       nbf.v4.new_markdown_cell(CASE_1_TEXT),
                        nbf.v4.new_code_cell(BIG_O_CODE),
                        nbf.v4.new_markdown_cell(CASE_2_TEXT),
                        nbf.v4.new_code_cell(OMEGA_CODE),
