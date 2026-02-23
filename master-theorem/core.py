@@ -232,14 +232,12 @@ $$ T(n) = 8T(\\frac{n}{2}) + n^{2.5} $$
 **Complete the code below** by filling in the correct values for a, b and f(n). 
 '''
 
-TEST_CODE = '''
-n = Real( 'n' )
+TEST_CODE = '''n = Real( 'n' )
 a = False     # REPLACE THIS LINE
 b = False     # REPLACE THIS LINE
 f = pow(0, 0) # REPLACE THIS LINE
 
-masterTheoremSolver( n, a, b, f )
-'''
+masterTheoremSolver( n, a, b, f )'''
 
 OUTRO = '''
 Now we have successfully used Z3 to determine the time complexity of divide and conquer algorithms!
@@ -262,7 +260,7 @@ mynotebook['cells'] = [nbf.v4.new_markdown_cell(COMPARE_F_G_TEXT),
                        nbf.v4.new_code_cell(MASTER_THEOREM_CODE),
                        nbf.v4.new_markdown_cell(TEST_TEXT),
                        nbf.v4.new_code_cell(TEST_CODE),
-                       nbf.v4.new_code_cell(TEST_OUTRO),
+                       nbf.v4.new_markdown_cell(TEST_OUTRO),
                        nbf.v4.new_markdown_cell(TEST_2_TEXT),
                        nbf.v4.new_code_cell(TEST_CODE),
                        nbf.v4.new_markdown_cell(TEST_3_TEXT),
