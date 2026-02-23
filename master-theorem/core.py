@@ -260,6 +260,13 @@ mynotebook['cells'] = [nbf.v4.new_markdown_cell(COMPARE_F_G_TEXT),
                        nbf.v4.new_code_cell(OMEGA_CODE),
                        nbf.v4.new_markdown_cell(MASTER_THEOREM_TEXT),
                        nbf.v4.new_code_cell(MASTER_THEOREM_CODE),
+                       nbf.v4.new_markdown_cell(TEST_TEXT),
+                       nbf.v4.new_code_cell(TEST_CODE),
+                       nbf.v4.new_code_cell(TEST_OUTRO),
+                       nbf.v4.new_markdown_cell(TEST_2_TEXT),
+                       nbf.v4.new_code_cell(TEST_CODE),
+                       nbf.v4.new_markdown_cell(TEST_3_TEXT),
+                       nbf.v4.new_code_cell(TEST_CODE),
                        nbf.v4.new_markdown_cell(OUTRO)]
 
 nbf.validator.normalize( mynotebook )
