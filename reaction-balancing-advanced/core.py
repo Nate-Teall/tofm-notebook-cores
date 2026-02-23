@@ -33,79 +33,6 @@ showSolver( s ) # view the equations
 CHECK = '''print( s.check() ) # check if solution exists'''
 MODEL = '''print( s.model() ) # output solution'''
 
-AAAAAAAAAAAA = '''
-# Initialize Z3 solver
-s = Solver()
-
-# Store into a data structure:
-reactants = ["H2", "O2"]
-products = ["H2O"]
-compounds = {
-    "H2": {"H": 2},
-    "O2": {"O": 2},
-    "H2O": {"H": 2, "O": 1}
-}
-
-def count_elements(equation_half, compounds):
-  coefficients = []
-  element_totals = {}
-
-  for compound in equation_half:
-    # Create a variable for the coefficient
-    coefficient = Int(compound)
-    coefficients.append(coefficient)
-
-    # Create an equation to balance all of the 
-    current_compound = compounds[compound]
-
-    for element in current_compound:
-      total = coefficient * current_compound[element]
-
-      if element not in element_totals:
-        element_totals[element] = total
-      else:
-        element_totals[element] += total
-  
-  return coefficients, element_totals
-
-reactants_coef, reactants_eq = count_elements(reactants, compounds)
-products_coef, products_eq = count_elements(products, compounds)
-
-print(reactants_coef)
-print(reactants_eq)
-
-print(products_coef)
-print(products_eq)
-
-for element in reactants_eq:
-  s.add(reactants_eq[element] == products_eq[element])
-
-for coefficient in reactants_coef:
-  s.add(coefficient >= 1)
-
-for coefficient in products_coef:
-  s.add(coefficient >= 1)
-
-# Initialize variables
-# x1 = Int('x1') # Coefficient of H2
-# x2 = Int('x2') # Coefficient of O2
-# x3 = Int('x3') # Coefficient of H2O
-
-# Add the equation to balance oxygen
-# s.add( 2*x2 == x3 )
-
-# Add the equation to balance hydrogen
-# s.add( 2*x1 == 2*x3 ) # REPLACE THIS LINE
-
-# Ensure each coefficient is positive!
-# s.add( x1 >= 1 )
-# s.add( x2 >= 1 )
-# s.add( x3 >= 1 )
-
-showSolver( s ) # View the equations
-print( s.check() ) # Check if solution exists
-'''
-
 INTRO_TEXT = '''
 ## Reaction Balancing using Z3
 
@@ -192,16 +119,75 @@ print( 'Coefficients for each reactant:', coefficients )
 print( 'Total of each element:', element_totals )
 '''
 
-REACTION2_TEXT = '''
-## Combustion of Propanol
+BALANCE_REACTION_TEXT = '''
+### Balancing Both Sides
 
-Next, let's balance a more complex reaction, the combustion of propanol:
+Great! All that is left is to use this function to balance both halves of the reaction. 
+Remember, in order to balance the reaction, we must ensure the amounts of an element on both sides are *equal*. 
+
+**Replace lines in the code below** to finish the full function
+'''
+
+BALANCE_REACTION_CODE = '''
+def create_reaction_solver(reactants, products):
+  s = Solver()
+
+  # Get the coefficients and equations for both sides
+  reactants_coef, reactants_totals = count_elements(reactants)
+  products_coef, products_eq = count_elements(products)
+
+  # Ensure the amount of each element is the same on reactants and products side
+  for element in reactants_eq:
+    s.add( False ) # REPLACE THIS LINE
+
+  coefficients = reactants_Coef + products_coef
+  
+  # Ensure all coefficients are positive
+  for coefficient in coefficients:
+    s.add( False ) # REPLACE THIS LINE
+
+  return s
+'''
+
+BALANCE_REACTION_TEST = '''
+Let's test our function with the example reaction!
+'''
+
+BALANCE_REACTION_TEST_CODE = '''
+reactants = {
+  'H2': {'H': 2},
+  'O2': {'O': 2}
+}
+
+products = {
+  'H2O': {'H': 2, 'O': 1}
+}
+
+s = create_reaction_solver(reactants, products)
+
+showSolver( s ) # View the equations
+print( s.check() ) # Check if solution exists
+'''
+
+REACTION2_TEXT = '''
+### Combustion of Propanol
+
+Great! Let's test our function one last time with a more complex reaction, the combustion of propanol.
 
 $$C_3H_7OH + O_2 \\rightarrow CO_2 + H_2O$$
 
-To balance this reaction, we will need 4 coefficients, one for each compound. 
-Because this reaction conatins 3 elements (C, H, and O), we will need three equations. One to balance each of them.
-**Replace the corresponding lines in the cell below** to balance the reaction.
+**Replace the lines in the code below** to input the above reaction into our solver.
+'''
+
+REACTION2_CODE = '''
+reactants = { } # REPLACE THIS LINE
+
+products = { } # REPLACE THIS LINE
+
+s = create_reaction_solver(reactants, products)
+
+showSolver( s ) # View the equations
+print( s.check() ) # Check if solution exists
 '''
 
 
@@ -212,14 +198,26 @@ mynotebook['cells'] = [nbf.v4.new_markdown_cell(SYSTEM_OF_EQUATIONS_TEXT),
                        nbf.v4.new_code_cell(SYSTEM_OF_EQUATIONS_CODE),
                        nbf.v4.new_code_cell(CHECK),
                        nbf.v4.new_code_cell(MODEL),
-                       nbf.v4.new_markdown_cell(REACTION1_TEXT),
-                       nbf.v4.new_code_cell(REACTION1_CODE),
+
+                       nbf.v4.new_markdown_cell(INTRO_TEXT),
+                       nbf.v4.new_markdown_cell(STORING_EQ_TEXT),
+                       nbf.v4.new_code_cell(STORING_EQ_CODE),
+
+                       nbf.v4.new_markdown_cell(COUNT_ELEMENTS_TEXT),
+                       nbf.v4.new_code_cell(COUNT_ELEMENTS_CODE),
+                       nbf.v4.new_markdown_cell(COUNT_ELEMENTS_TEST),
+                       nbf.v4.new_code_cell(COUNT_ELEMENTS_TEST_CODE),
+
+                       nbf.v4.new_markdown_cell(BALANCE_REACTION_TEXT),
+                       nbf.v4.new_code_cell(BALANCE_REACTION_CODE),
+                       nbf.v4.new_markdown_cell(BALANCE_REACTION_TEST),
+                       nbf.v4.new_code_cell(BALANCE_REACTION_TEST_CODE),
                        nbf.v4.new_code_cell(MODEL),
-                       nbf.v4.new_markdown_cell(REACTION1_OUTRO),
+
                        nbf.v4.new_markdown_cell(REACTION2_TEXT),
                        nbf.v4.new_code_cell(REACTION2_CODE),
                        nbf.v4.new_code_cell(MODEL)]
 
 nbf.validator.normalize( mynotebook )
 nbf.validate( mynotebook )
-nbf.write( mynotebook, "reaction-balancing/REACTION-CORE.ipynb" )
+nbf.write( mynotebook, "reaction-balancing-advanced/REACTION-ADVANCED-CORE.ipynb" )
