@@ -106,58 +106,90 @@ showSolver( s ) # View the equations
 print( s.check() ) # Check if solution exists
 '''
 
-REACTION1_TEXT = '''
+INTRO_TEXT = '''
 ## Reaction Balancing using Z3
 
-Recall from the previous notebook that we wrote a program to balance the following reaction using Z3:
+Recall that in the previous notebook, we wrote a program that balances the following reaction:
 
-$$H_2 + O_2 \\rightarrow H_2O$$
+$$H_2 + O_2 \\rightarrow  H_2O$$
 
-To balance the reaction, we need to find coefficients x<sub>i</sub> for each compound that balances all elements.
-
-$$x_1 \\cdot H_2 + x_2 \\cdot O_2 \\rightarrow x_3 \\cdot H_2O$$
-
-To balance oxygen, the number of atoms of oxygen must be the same on both sides of the reaction. So, we will use this equation to model the amount on each side. 
-
-$$2 \\cdot x_2 = x_3$$
-
-Similarly, we can use this equation to balance hydrogen:
-
-$$2 \\cdot x_1 = 2 \\cdot x_3$$
-
-**Replace the line in the code below** to use Z3 to find the coefficients. 
+Let's see how we can improve on this to make a program that can balance more reactions. 
 '''
 
-# It might be more clear if we name the coefficients after the compound they are connected to,
-# instead of x1, x2, etc...
-REACTION1_CODE = '''
-# Initialize Z3 solver
-s = Solver()
+STORING_EQ_TEXT = '''
+### Representing Chemical Reaction
 
-# Initialize variables
-x1 = Int('x1') # Coefficient of H2
-x2 = Int('x2') # Coefficient of O2
-x3 = Int('x3') # Coefficient of H2O
+To write this program, we need a way to represent our reaction in python. 
+To do this, we will use a dictionary to store each half of the reaction. 
 
-# Add the equation to balance oxygen
-s.add( 2*x2 == x3 ) 
-
-# Add the equation to balance hydrogen
-s.add( False ) # REPLACE THIS LINE
-
-# Ensure each coefficient is positive!
-s.add( x1 >= 1 )
-s.add( x2 >= 1 )
-s.add( x3 >= 1 )
-
-showSolver( s ) # View the equations
-print( s.check() ) # Check if solution exists
+In our example reaction, we have two reactants and one product, which we can represent as shown below.
+Note that for each compound, we also need to know how much of each element is in it.
 '''
 
-REACTION1_OUTRO = '''
-Great! You have successfully balanced the reaction:
+STORING_EQ_CODE = '''
+reactants = {
+  'H2': {'H': 2},
+  'O2': {'O': 2}
+}
 
-$$2H_2 + O_2 \\rightarrow 2H_2O$$
+products = {
+  'H2O': {'H': 2, 'O': 1}
+}
+'''
+
+COUNT_ELEMENTS_TEXT = '''
+### Calculating Element Totals
+
+Recall that in the previous notebook, we found that balancing a reaction requires one variable for each coefficient, 
+and one equation for each element.
+
+To start, let's write a function that will create the variables
+and an equation to represent the total amount of each element in one half of the reaction.
+
+For our example reaction:
+
+$$H_2 + O_2 \\rightarrow  H_2O$$
+
+We need a coefficient for $ H_2 $ and $ O_2 $, as well as an equation to represent the number of hydrogen and oxygen atoms on the reactants side.
+**Replace lines in the code below** to finish this function.
+'''
+
+COUNT_ELEMENTS_CODE = '''
+def count_elements(reaction_half):
+  # Create a list of coefficients
+  coefficients = []
+  # Create a dictionary that maps an element to an equation to calculate it's total on this half
+  element_totals = {}
+  
+  for compound in equation_half:
+  
+    # Create a z3 variable for each coefficient
+    coefficient = False # REPLACE THIS LINE
+    coefficients.append( coefficient ) 
+
+    # Count the amount of each element in this compound
+    for element in compound:
+      amount_of_element = compound[element]
+
+      total = False # REPLACE THIS LINE
+
+      if element not in element_totals:
+        element_totals[element] = total
+      else:
+        element_totals[element] += total
+  
+  return coefficients, element_totals
+'''
+
+COUNT_ELEMENTS_TEST = '''
+Test your function below by confirming that it correctly creates a variable for each compound on the reactants side of the equation:
+'''
+
+COUNT_ELEMENTS_TEST_CODE = '''
+coefficients, element_totals = count_elements(reactants)
+
+print( 'Coefficients for each reactant:', coefficients )
+print( 'Total of each element:', element_totals )
 '''
 
 REACTION2_TEXT = '''
@@ -167,38 +199,11 @@ Next, let's balance a more complex reaction, the combustion of propanol:
 
 $$C_3H_7OH + O_2 \\rightarrow CO_2 + H_2O$$
 
-To balance this reaction, we will need 4 coefficients, one for each compound:
-
-$$x_1 \\cdot C_3H_7OH + x_2 \\cdot O_2 \\rightarrow x_3 \\cdot CO_2 + x_4 \\cdot H_2O$$
-
+To balance this reaction, we will need 4 coefficients, one for each compound. 
 Because this reaction conatins 3 elements (C, H, and O), we will need three equations. One to balance each of them.
 **Replace the corresponding lines in the cell below** to balance the reaction.
 '''
 
-REACTION2_CODE = '''
-# Initialize Z3 solver
-s = Solver()
-
-# Initialize variables
-x1 = Int('x1') # Coefficient of Propanol
-x2 = Int('x2') # Coefficient of O2
-x3 = Int('x3') # Coefficient of CO2
-x4 = Int('x4') # Coefficient of H2O
-
-# REPLACE THE THREE LINES BELOW
-s.add( False ) # Balance carbon
-s.add( False ) # Balance hydrogen
-s.add( False ) # Balance oxygen
-
-# Ensure each coefficient is positive!
-s.add( x1 >= 1 )
-s.add( x2 >= 1 )
-s.add( x3 >= 1 )
-s.add( x4 >= 1 )
-
-showSolver( s ) # View the equations
-print( s.check() ) # check if solution exists
-'''
 
 ### Build the notebook ###
 mynotebook = nbf.v4.new_notebook()
