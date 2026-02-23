@@ -116,9 +116,7 @@ The Master Theorem lets us determine the overall complexity of the function, by 
 
 Where $\epsilon$ is some constant > 0
 
-Now, we will use Z3 to determine the time complexity of some algorithm. The recurrence relation we will be using is:
-
-$$ T(n) = 8T(\\frac{n}{4}) + n^{1.5} $$
+Now, we will use Z3 to apply this to any algorithm.
 '''
 
 CASE_1_TEXT = '''
@@ -152,14 +150,12 @@ def bigO( f, g ):
 CASE_2_TEXT = '''
 ### Checking Case 2 and 3
 
-Now that we have written a function to test case 1, we will now write one to check case 2 and 3. 
-
-Recall that $ f = \Theta(g) $ if BOTH $ f = O(g) $ and $ f = \Omega(g) $ are true. 
+Now that we have written a function to test case 1, we will now write one to check case 3. 
 
 For two functions $f(n)$ and $g(n)$ we say that $f(n)=\\Omega(g(n))$ if and only if there exist constants $c$ and $n_0$ such that
 
 $$\\forall n : n \\geq n_0 \\implies f(n) \\geq c \\cdot g(n)$$
-**Complete the code below to make a function that shows $f(n)=\\Omega(g(n))$ as in the function above:**
+**Complete the code below to make a function that shows $f(n)=\\Omega(g(n))$ as described above:**
 '''
 
 OMEGA_CODE = '''
@@ -185,20 +181,18 @@ MASTER_THEOREM_TEXT = '''
 
 Finally, we can write a function to determine which case of the master theorem applies to our algorithm.
 
-Remember, the recurrence relation is:
+The last step is to check if case 2 applies. Recall that $ f = \Theta(g) $ if BOTH $ f = O(g) $ and $ f = \Omega(g) $ are true. 
 
-$$ T(n) = 8T(\\frac{n}{4}) + n^{1.5} $$
-
-**Complete the code below** by filling in the correct values for a, b and f(n).
+**Replace the lines in the code below** to complete the function to apply the master theorem. 
 '''
 
 MASTER_THEOREM_CODE = '''
 def masterTheoremSolver( n, a, b, f ):
-  g = pow( n, log(a, b) )
+  g = pow( False ) # REPLACE THIS LINE
 
-  isBigO = bigO( f, g )
-  isBigOmega = bigOmega( f, g )
-  isTheta = isBigO and isBigOmega
+  isTheta = False    # REPLACE THIS LINE
+  isBigO = False     # REPLACE THIS LINE
+  isBigOmega = False # REPLACE THIS LINE
 
   if isTheta:
     print("f = Theta(g), Case 2!")
@@ -206,18 +200,49 @@ def masterTheoremSolver( n, a, b, f ):
     print("f = O(g), Case 1!") 
   elif isBigOmega:
     print("f = Omega(g), Case 3!") 
+'''
 
+TEST_TEXT = '''
+Let's test our function with a few examples.
+
+For our first example, we will use the recurrence relation for a well known algorithm, merge sort:
+
+$$ T(n) = 2T(\\frac{n}{2}) + n$$
+
+**Complete the code below** by filling in the correct values for a, b, and f(n).
+'''
+
+TEST_OUTRO = '''
+Since case 2 applies, we have shown that $ T(n) = \Theta(n \\cdot logn) $, which is the correct complexity of merge sort!
+'''
+
+TEST_2_TEXT = '''
+Let's try it with another recurrence. For this one, case 3 should apply:
+
+$$ T(n) = 7T(\\frac{n}{3}) + n^{2} $$
+
+**Complete the code below** by filling in the correct values for a, b and f(n). 
+'''
+
+TEST_3_TEXT = '''
+Lastly, let's try a recurrence where case 1 applies.
+
+$$ T(n) = 8T(\\frac{n}{2}) + n^{2.5} $$
+
+**Complete the code below** by filling in the correct values for a, b and f(n). 
+'''
+
+TEST_CODE = '''
 n = Real( 'n' )
 a = False     # REPLACE THIS LINE
 b = False     # REPLACE THIS LINE
 f = pow(0, 0) # REPLACE THIS LINE
+
 masterTheoremSolver( n, a, b, f )
 '''
 
 OUTRO = '''
-Now we have determined that $ f(n) = \Theta(n^{log_ba}) $. 
-
-Since case 2 applies, you have now proven that $ T(n) = \Theta(n^{1.5} \cdot logn) $ ! 
+Now we have successfully used Z3 to determine the time complexity of divide and conquer algorithms!
 '''
 
 ### Build the notebook ###

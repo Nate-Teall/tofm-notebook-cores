@@ -95,9 +95,9 @@ def count_elements(reaction_half):
     coefficients.append( coefficient ) 
 
     # Count the amount of each element in this compound
-    compound_elements = reaction_half[compound]
-    for element in compound_elements:
-      amount_of_element = compound_elements[element]
+    elements = reaction_half[compound]
+    for element in elements:
+      amount_of_element = elements[element]
 
       total = False # REPLACE THIS LINE
 
