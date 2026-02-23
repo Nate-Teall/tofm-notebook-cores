@@ -33,22 +33,97 @@ showSolver( s ) # view the equations
 CHECK = '''print( s.check() ) # check if solution exists'''
 MODEL = '''print( s.model() ) # output solution'''
 
+AAAAAAAAAAAA = '''
+# Initialize Z3 solver
+s = Solver()
+
+# Store into a data structure:
+reactants = ["H2", "O2"]
+products = ["H2O"]
+compounds = {
+    "H2": {"H": 2},
+    "O2": {"O": 2},
+    "H2O": {"H": 2, "O": 1}
+}
+
+def count_elements(equation_half, compounds):
+  coefficients = []
+  element_totals = {}
+
+  for compound in equation_half:
+    # Create a variable for the coefficient
+    coefficient = Int(compound)
+    coefficients.append(coefficient)
+
+    # Create an equation to balance all of the 
+    current_compound = compounds[compound]
+
+    for element in current_compound:
+      total = coefficient * current_compound[element]
+
+      if element not in element_totals:
+        element_totals[element] = total
+      else:
+        element_totals[element] += total
+  
+  return coefficients, element_totals
+
+reactants_coef, reactants_eq = count_elements(reactants, compounds)
+products_coef, products_eq = count_elements(products, compounds)
+
+print(reactants_coef)
+print(reactants_eq)
+
+print(products_coef)
+print(products_eq)
+
+for element in reactants_eq:
+  s.add(reactants_eq[element] == products_eq[element])
+
+for coefficient in reactants_coef:
+  s.add(coefficient >= 1)
+
+for coefficient in products_coef:
+  s.add(coefficient >= 1)
+
+# Initialize variables
+# x1 = Int('x1') # Coefficient of H2
+# x2 = Int('x2') # Coefficient of O2
+# x3 = Int('x3') # Coefficient of H2O
+
+# Add the equation to balance oxygen
+# s.add( 2*x2 == x3 )
+
+# Add the equation to balance hydrogen
+# s.add( 2*x1 == 2*x3 ) # REPLACE THIS LINE
+
+# Ensure each coefficient is positive!
+# s.add( x1 >= 1 )
+# s.add( x2 >= 1 )
+# s.add( x3 >= 1 )
+
+showSolver( s ) # View the equations
+print( s.check() ) # Check if solution exists
+'''
+
 REACTION1_TEXT = '''
 ## Reaction Balancing using Z3
 
-Now that we know how to solve systems of equations using Z3, lets use this to balance the following reaction:
+Recall from the previous notebook that we wrote a program to balance the following reaction using Z3:
 
 $$H_2 + O_2 \\rightarrow H_2O$$
 
-To balance the reaction, we need to find coefficients for each compound that balances all elements.
+To balance the reaction, we need to find coefficients x<sub>i</sub> for each compound that balances all elements.
+
+$$x_1 \\cdot H_2 + x_2 \\cdot O_2 \\rightarrow x_3 \\cdot H_2O$$
 
 To balance oxygen, the number of atoms of oxygen must be the same on both sides of the reaction. So, we will use this equation to model the amount on each side. 
 
-$$2 \\cdot H_2 = H_2O$$
+$$2 \\cdot x_2 = x_3$$
 
 Similarly, we can use this equation to balance hydrogen:
 
-$$2 \\cdot H_2 = 2 \\cdot H_2O$$
+$$2 \\cdot x_1 = 2 \\cdot x_3$$
 
 **Replace the line in the code below** to use Z3 to find the coefficients. 
 '''
@@ -60,20 +135,20 @@ REACTION1_CODE = '''
 s = Solver()
 
 # Initialize variables
-H2 = Int('H2')   # Coefficient of H2
-O2 = Int('O2')   # Coefficient of O2
-H2O = Int('H2O') # Coefficient of H2O
+x1 = Int('x1') # Coefficient of H2
+x2 = Int('x2') # Coefficient of O2
+x3 = Int('x3') # Coefficient of H2O
 
 # Add the equation to balance oxygen
-s.add( 2*O2 == H2O ) 
+s.add( 2*x2 == x3 ) 
 
 # Add the equation to balance hydrogen
 s.add( False ) # REPLACE THIS LINE
 
 # Ensure each coefficient is positive!
-s.add( H2 >= 1 )
-s.add( O2 >= 1 )
-s.add( H2O >= 1 )
+s.add( x1 >= 1 )
+s.add( x2 >= 1 )
+s.add( x3 >= 1 )
 
 showSolver( s ) # View the equations
 print( s.check() ) # Check if solution exists
@@ -92,7 +167,10 @@ Next, let's balance a more complex reaction, the combustion of propanol:
 
 $$C_3H_7OH + O_2 \\rightarrow CO_2 + H_2O$$
 
-To balance this reaction, we will need 4 coefficients, one for each compound. 
+To balance this reaction, we will need 4 coefficients, one for each compound:
+
+$$x_1 \\cdot C_3H_7OH + x_2 \\cdot O_2 \\rightarrow x_3 \\cdot CO_2 + x_4 \\cdot H_2O$$
+
 Because this reaction conatins 3 elements (C, H, and O), we will need three equations. One to balance each of them.
 **Replace the corresponding lines in the cell below** to balance the reaction.
 '''
@@ -102,10 +180,10 @@ REACTION2_CODE = '''
 s = Solver()
 
 # Initialize variables
-Propanol = Int('Propanol') # Coefficient of Propanol
-O2 = Int('O2')             # Coefficient of O2
-CO2 = Int('CO2')           # Coefficient of CO2
-H2O = Int('H2O')           # Coefficient of H2O
+x1 = Int('x1') # Coefficient of Propanol
+x2 = Int('x2') # Coefficient of O2
+x3 = Int('x3') # Coefficient of CO2
+x4 = Int('x4') # Coefficient of H2O
 
 # REPLACE THE THREE LINES BELOW
 s.add( False ) # Balance carbon
@@ -113,10 +191,10 @@ s.add( False ) # Balance hydrogen
 s.add( False ) # Balance oxygen
 
 # Ensure each coefficient is positive!
-s.add( Propanol >= 1 )
-s.add( O2 >= 1 )
-s.add( CO2 >= 1 )
-s.add( H2O >= 1 )
+s.add( x1 >= 1 )
+s.add( x2 >= 1 )
+s.add( x3 >= 1 )
+s.add( x4 >= 1 )
 
 showSolver( s ) # View the equations
 print( s.check() ) # check if solution exists
