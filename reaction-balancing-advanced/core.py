@@ -44,7 +44,7 @@ Let's see how we can improve on this to make a program that can balance more rea
 '''
 
 STORING_EQ_TEXT = '''
-### Representing Chemical Reaction
+### Representing Chemical Reactions
 
 To write this program, we need a way to represent our reaction in python. 
 To do this, we will use a dictionary to store each half of the reaction. 
@@ -88,15 +88,16 @@ def count_elements(reaction_half):
   # Create a dictionary that maps an element to an equation to calculate it's total on this half
   element_totals = {}
   
-  for compound in equation_half:
+  for compound in reaction_half:
   
     # Create a z3 variable for each coefficient
     coefficient = False # REPLACE THIS LINE
     coefficients.append( coefficient ) 
 
     # Count the amount of each element in this compound
-    for element in compound:
-      amount_of_element = compound[element]
+    compound_elements = reaction_half[compound]
+    for element in compound_elements:
+      amount_of_element = compound_elements[element]
 
       total = False # REPLACE THIS LINE
 
@@ -134,13 +135,13 @@ def create_reaction_solver(reactants, products):
 
   # Get the coefficients and equations for both sides
   reactants_coef, reactants_totals = count_elements(reactants)
-  products_coef, products_eq = count_elements(products)
+  products_coef, products_totals = count_elements(products)
 
   # Ensure the amount of each element is the same on reactants and products side
-  for element in reactants_eq:
+  for element in reactants_totals:
     s.add( False ) # REPLACE THIS LINE
 
-  coefficients = reactants_Coef + products_coef
+  coefficients = reactants_coef + products_coef
   
   # Ensure all coefficients are positive
   for coefficient in coefficients:
