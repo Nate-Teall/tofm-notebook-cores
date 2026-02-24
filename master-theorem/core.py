@@ -97,9 +97,6 @@ s.check()
 '''
 
 ### Master Theorem ###
-
-# I'm not sure if it would be nicer to have the example be a more familiar algorithm, like merge sort, 
-# but that is a pretty trivial case
 MASTER_THEOREM_INTRO = '''
 ## Applying the Master Theorem in Z3
 
@@ -148,7 +145,7 @@ def bigO( f, g ):
 '''
 
 CASE_2_TEXT = '''
-### Checking Case 2 and 3
+### Checking Case 3
 
 Now that we have written a function to test case 1, we will now write one to check case 3. 
 
