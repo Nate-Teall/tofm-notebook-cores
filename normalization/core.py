@@ -44,15 +44,15 @@ row2 = {
     'courseFee' : String('B.courseFee'),
 }
 
-def functional_dependency(row1, row2, X, Y)"
+def functional_dependency(row1, row2, X, Y):
     return Implies( False ) # REPLACE THIS LINE    
 
 # Initialize solver
 s = Solver()
 
 # Add two functional dependencies
-s.add( functional_dependency('studentID', 'studentName') )
-s.add( functional_dependency('courseID', 'courseFee') )
+s.add( functional_dependency(row1, row2, 'studentID', 'studentName') )
+s.add( functional_dependency(row1, row2, 'courseID', 'courseFee') )
     
 showSolver(s)
 """
@@ -88,10 +88,10 @@ def has_fd(s, row1, row2, X, Y):
 s = Solver()
 
 # Add a functional dependency
-s.add( functional_dependency('studentID', 'studentName') )
+s.add( functional_dependency(row1, row2, 'studentID', 'studentName') )
 
 # Check if the FD exists:
-print("studentID -> studentName :", has_fd(s, row1, row2, 'studentID', 'studentName')
+print("studentID -> studentName :", has_fd(s, row1, row2, 'studentID', 'studentName'))
 
 # Check for a non-existent FD:
 print("studentID -> courseFee :", has_fd(s, row1, row2, 'studentID', 'courseFee'))
@@ -133,7 +133,7 @@ row2 = {
 
 # Determine the primary key
 primary_key = ['studentID', 'courseID']
-non_prime_attributes = ['studenName', 'courseFee']
+non_prime_attributes = ['studentName', 'courseFee']
 
 # Initialize solver
 s = Solver()
