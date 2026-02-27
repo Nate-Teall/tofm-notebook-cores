@@ -44,15 +44,15 @@ row2 = {
     'courseFee' : String('B.courseFee'),
 }
 
-def functional_dependency(row1, row2, X, Y):
+def functional_dependency(X, Y):
     return Implies( False ) # REPLACE THIS LINE    
 
 # Initialize solver
 s = Solver()
 
 # Add two functional dependencies
-s.add( functional_dependency(row1, row2, 'studentID', 'studentName') )
-s.add( functional_dependency(row1, row2, 'courseID', 'courseFee') )
+s.add( functional_dependency('studentID', 'studentName') )
+s.add( functional_dependency('courseID', 'courseFee') )
     
 showSolver(s)
 """
@@ -63,6 +63,7 @@ Great! Next, to determine if a relation is normalized, we must check whether or 
 We can do this by adding the following constraint:
 
 $$ row1.X = row2.X \land row1.Y \\neq row2.Y $$
+
 Here, you can see we are asking the solver to find a case where the two rows share the same value of X, but they do not have the same value for Y. 
 This would mean there is a counterexample where X does not determine Y. If no such counterexample exists, then we have proven the functional dependency exists.
 
@@ -70,7 +71,7 @@ This would mean there is a counterexample where X does not determine Y. If no su
 """
 
 CHECK_FOR_DEPENDENCY_CODE = """
-def has_fd(s, row1, row2, X, Y):
+def has_fd(s, X, Y):
     s.push()
 
     s.add(
@@ -88,13 +89,13 @@ def has_fd(s, row1, row2, X, Y):
 s = Solver()
 
 # Add a functional dependency
-s.add( functional_dependency(row1, row2, 'studentID', 'studentName') )
+s.add( functional_dependency('studentID', 'studentName') )
 
 # Check if the FD exists:
-print("studentID -> studentName :", has_fd(s, row1, row2, 'studentID', 'studentName'))
+print("studentID -> studentName :", has_fd(s, 'studentID', 'studentName'))
 
 # Check for a non-existent FD:
-print("studentID -> courseFee :", has_fd(s, row1, row2, 'studentID', 'courseFee'))
+print("studentID -> courseFee :", has_fd(s, 'studentID', 'courseFee'))
 """
 
 SECOND_NF = """
@@ -142,12 +143,13 @@ s = Solver()
 s.add( False ) # REPLACE THESE LINES
 s.add( False ) # REPLACE THESE LINES
 
-# Check that each non-prime attribute depends on the entire primary key
-for non_prime in non_prime_attributes:
-    for prime in primary_key:
-        dependency_exists = has_fd() # REPLACE THIS LINE
-        if not dependency_exists:
-            print("The relation has a partial dependency.", non_prime, "does not depend on primary attribute", prime)
+def check_2nf(s, primary_key, non_prime_attributes):
+    # Check that each non-prime attribute depends on the entire primary key
+    for non_prime in non_prime_attributes:
+        for prime in primary_key:
+            dependency_exists = False # REPLACE THIS LINE
+            if not dependency_exists:
+                print("The relation has a partial dependency.", non_prime, "does not depend on primary attribute", prime)
 """
 
 ### Build the notebook ###
