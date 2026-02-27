@@ -5,7 +5,7 @@ import nbformat as nbf
 INTRO = """
 ## Database Normalization in Z3
 
-In order to determine whether or not a relation is normalized, we must first know the functional dependencies.
+In order to determine whether or not a relation is normalized in second normal form, we must first know the functional dependencies.
 Below is an example relation with 4 attributes:
 
 $$ R_1(\\underline{studentID}, \\underline{courseID}, studentName, courseFee) $$
@@ -143,13 +143,12 @@ s = Solver()
 s.add( False ) # REPLACE THESE LINES
 s.add( False ) # REPLACE THESE LINES
 
-def check_2nf(s, primary_key, non_prime_attributes):
-    # Check that each non-prime attribute depends on the entire primary key
-    for non_prime in non_prime_attributes:
-        for prime in primary_key:
-            dependency_exists = False # REPLACE THIS LINE
-            if not dependency_exists:
-                print("The relation has a partial dependency.", non_prime, "does not depend on primary attribute", prime)
+# Check that each non-prime attribute depends on the entire primary key
+for non_prime in non_prime_attributes:
+    for prime in primary_key:
+        dependency_exists = False # REPLACE THIS LINE
+        if not dependency_exists:
+            print("The relation has a partial dependency.", non_prime, "does not depend on primary attribute", prime)
 """
 
 ### Build the notebook ###
