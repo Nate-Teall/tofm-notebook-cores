@@ -86,7 +86,7 @@ s.add( functional_dependency( ) ) # REPLACE THIS LINE
     
 # The following code should ouput True for both
 print("studentID -> studentName :", has_fd(s, "studentID", "studentName"))
-print("courseID -> courseName :", has_fd(s, "courseID", "courseName"))
+print("courseID -> courseFee :", has_fd(s, "courseID", "courseFee"))
 """
 
 SECOND_NF = """
@@ -100,7 +100,7 @@ In order to prove whether or not the relation is normalized, we must check that 
 """
 
 SECOND_NF_CODE = """
-def is_2nf(s, primary_key, non_prime)
+def is_2nf(s, primary_key, non_prime):
     # Check that each non-prime attribute depends on the entire primary key
     for attribute in non_prime_attributes:
         for key in primary_key:
@@ -121,6 +121,8 @@ s = Solver()
 # Create the functional dependencies:
 s.add( False ) # REPLACE THESE LINES
 s.add( False ) # REPLACE THESE LINES
+
+showSolver( s )
 
 # Should output False
 print("Is R1 in 2NF?", is_2nf(s, primary_key, non_prime_attributes))
@@ -188,7 +190,9 @@ s.add( False ) # REPLACE THESE LINES
 s.add( False ) # REPLACE THESE LINES
 s.add( False ) # REPLACE THESE LINES
 
-print("Does the relation satisfy 2NF:", check_2nf(s, primary_key, non_prime_attributes))
+showSolver( s )
+print()
+print("Does the relation satisfy 2NF:", is_2nf(s, primary_key, non_prime_attributes))
 """
 
 THIRD_NF = '''
@@ -217,9 +221,11 @@ def check_3nf(s, primary_key, non_prime_attributes):
     for attribute1 in non_prime_attributes:
         for attribute2 in non_prime_attributes:
             if True: # REPLACE THESE LINES
-                return
+                pass # REPLACE THESE LINES
+    return True
 
-print("Relation satisfies 3NF:", check_3nf(s, non_prime_attributes))
+# Should print False
+print("Relation satisfies 3NF:", check_3nf(s, primary_key, non_prime_attributes))
 '''
 
 ### Build the notebook ###
