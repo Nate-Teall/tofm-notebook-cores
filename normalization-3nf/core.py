@@ -5,77 +5,69 @@ import nbformat as nbf
 INTRO = """
 ## Database Normalization in Z3
 
-In the previous notebook, we wrote some functions to help us determine if a relation satisfies 2NF. 
-In this notebook, we will expand upon this to write a function to determine if a relation satisfies 3NF.
+In the previous notebook, we wrote some functions to help us represent and check for functional dependencies.
+In this notebook, we will expand upon this to write functions to determine if a relation satisfies 2NF and 3NF.
 
-The relation we will test is below:
+The relations we will test are below:
 
-$$ R_1(\\underline{enrollmentID}, studentId, studentName, courseID, courseName) $$
+$$ R_1(\\underline{studentID}, \\underline{courseID}, studentName, courseFee) $$
+
+$$ R_2(\\underline{enrollmentID}, studentId, studentName, courseID, courseName) $$
 
 Just as before, the first thing we must do is determine the functional dependencies in the relation.
 """
 
+RELATIONS = """
+In order to represent functional dependencies in Z3, we first need to create variables to represent two rows in the relation.
+In the code below, we have created one variable for each attribute, for two arbitrary rows 'A' and 'B'.
+
+No code is needed for this cell, **simply run the cell to create the variables**.
+"""
+
+RELATIONS_CODE = """
+# Create variables to represent two arbitrary rows in the relation
+row1 = {
+    'studentID' : String('A.studentID'),
+    'courseID' : String('A.courseID'),
+    'studentName' : String('A.studentName'),
+    'courseFee' : String('A.courseFee'),
+}
+row2 = {
+    'studentID' : String('B.studentID'),
+    'courseID' : String('B.courseID'),
+    'studentName' : String('B.studentName'),
+    'courseFee' : String('B.courseFee'),
+}
+"""
+
 DEPENDENCIES = """
-### Encoding Functional Dependencies
+### Functional Dependencies
 
-For two attributes X and Y, we say that X determines Y, $ X \\rightarrow Y $, if for any two rows in the relation:
+Let's take a look at the first relation:
 
-$$ row1.X = row2.X \\rightarrow row1.Y = row2.Y $$
+$$ R_1(\\underline{studentID}, \\underline{courseID}, studentName, courseFee) $$
 
-In other words, each value of X uniquely determines a value for Y.
+Which has functional dependencies:
 
-**Complete the code below** to create a function that encodes a functional dependendency in Z3.
+$$ studentID \\rightarrow studentName $$
+$$ courseID \\rightarrow courseFee $$
+
+In the previous notebook, you created functions to encode and check for functional dependencies. 
+These functions are provided below.
+
+**Complete the code below** to create the functional dependencies for R1.
 """
 
 DEPENDENCIES_CODE = """
-# Create variables to represent two arbitrary rows in the relation
-row1 = {
-    'enrollmentID' : String('A.enrollmentID'),
-    'studentID' : String('A.studentID'),
-    'studentName' : String('A.studentName'),
-    'courseID' : String('A.courseID'),
-    'courseName' : String('A.courseName'),
-}
-row2 = {
-    'enrollmentID' : String('B.enrollmentID'),
-    'studentID' : String('B.studentID'),
-    'studentName' : String('B.studentName'),
-    'courseID' : String('B.courseID'),
-    'courseName' : String('B.courseName'),
-}
-
+# These functions should be imported from another file
 def functional_dependency(X, Y):
-    return Implies( False ) # REPLACE THIS LINE    
+    return Implies( row1.X == row2.X, row1.Y == row2.Y ) 
 
-# Initialize solver
-s = Solver()
-
-# Add two functional dependencies
-s.add( functional_dependency('enrollmentID', 'studentID') )
-s.add( functional_dependency('enrollmentID', 'courseName') )
-    
-showSolver(s)
-"""
-
-CHECK_FOR_DEPENDENCY = """
-Great! Next, to determine if a relation is normalized, we must check whether or not certain dependencies exist.
-
-We can do this by adding the following constraint:
-
-$$ row1.X = row2.X \land row1.Y \\neq row2.Y $$
-
-Here, you can see we are asking the solver to find a case where the two rows share the same value of X, but they do not have the same value for Y. 
-This would mean there is a counterexample where X does not determine Y. If no such counterexample exists, then we have proven the functional dependency exists.
-
-**Complete the code below** to create a function that tests whether or not a functional dependency exists.
-"""
-
-CHECK_FOR_DEPENDENCY_CODE = """
 def has_fd(s, X, Y):
     s.push()
 
     s.add(
-        And( False ) # REPLACE THIS LINE
+        And( row1.X == row2.X, row1.Y != row2.Y )
     )
 
     result = s.check() == unsat # If we can't find a counterexample, then X -> Y
@@ -88,27 +80,65 @@ def has_fd(s, X, Y):
 # Initialize solver
 s = Solver()
 
-# Add a functional dependency
-s.add( functional_dependency('enrollmentID', 'studentID') )
-
-# Check if the FD exists:
-print("enrollmentID -> studentID :", has_fd(s, 'enrollmentID', 'studentID'))
-
-# Check for a non-existent FD:
-print("studentID -> courseName :", has_fd(s, 'studentID', 'courseName'))
+# Add the functional dependencies
+s.add( functional_dependency( ) ) # REPLACE THIS LINE
+s.add( functional_dependency( ) ) # REPLACE THIS LINE
+    
+# The following code should ouput True for both
+print("studentID -> studentName :", has_fd(s, "studentID", "studentName"))
+print("courseID -> courseName :", has_fd(s, "courseID", "courseName"))
 """
 
 SECOND_NF = """
-### Determining 2NF
+Now that we are able to represent functional dependencies, we can write a function to determine if a relation is in 2NF!
 
-Now that we are able to represent functional dependencies, we can write a function to determine if a relation is in 3NF!
+Recall that a relation is in 2NF if no partial dependencies exist. 
+That is, every attribute that is not in the primary key must depend on *every* attribute in the primary key.
 
-Recall that in order for a relation to satisfy 3NF it must first satisfy 2NF. 
-In the previous notebook, we already wrote a function to do this, which has been provided here.
+In order to prove whether or not the relation is normalized, we must check that studentName and courseFee depend on *both* studentID and courseID.
+**Complete the code below** to finish the function that determines if the relation is in 2NF
+"""
 
-Let's take a look at the example again:
+SECOND_NF_CODE = """
+def is_2nf(s, primary_key, non_prime)
+    # Check that each non-prime attribute depends on the entire primary key
+    for attribute in non_prime_attributes:
+        for key in primary_key:
+            dependency_exists = False # REPLACE THIS LINE
 
-$$ R_1(\\underline{enrollmentID}, studentId, studentName, courseID, courseName) $$
+            if not dependency_exists:
+                print("The relation has a partial dependency.", attribute, "does not depend on key attribute", key)
+                return False
+    return True
+
+# Determine the primary key
+primary_key = ['studentID', 'courseID']
+non_prime_attributes = ['studentName', 'courseFee']
+
+# Initialize solver
+s = Solver()
+
+# Create the functional dependencies:
+s.add( False ) # REPLACE THESE LINES
+s.add( False ) # REPLACE THESE LINES
+
+# Should output False
+print("Is R1 in 2NF?", is_2nf(s, primary_key, non_prime_attributes))
+"""
+
+SECOND_NF_OUTRO ="""
+Great! We have now proven the relation is not normalized, because studentName does not does not depend on courseID.
+Additionally, courseName does not depend on studentID!
+"""
+
+THIRD_NF_INTRO = """
+### Determining 3NF
+
+Next, let's try to prove whether a function is in third normal form.
+
+Here is our next relation:
+
+$$ R_2(\\underline{enrollmentID}, studentId, studentName, courseID, courseName) $$
 
 With the following functional dependencies:
 
@@ -118,21 +148,15 @@ $$ studentID \\rightarrow studentName $$
 $$ enrollmentID \\rightarrow courseID $$
 $$ enrollmentID \\rightarrow courseName $$
 $$ courseID \\rightarrow courseName $$
+"""
+
+THIRD_NF_2NF = """
+Recall that in order for a function to satisfy 3NF, it must already satisfy 2NF.
 
 **Complete the code below** to determine if the relation is in 2NF
 """
 
-SECOND_NF_CODE = """
-### THIS SHOULD BE IMPORTED SEPARATELY ###
-def check_2nf(s, primary_key, non_prime_attributes):
-    # Check that each non-prime attribute depends on the entire primary key
-    for non_prime in non_prime_attributes:
-        for prime in primary_key:
-            dependency_exists = has_fd(s, prime, non_prime)
-            if not dependency_exists:
-                return False
-    return True
-
+THIRD_NF_2NF_CODE = """
 # Create variables to represent two arbitrary rows in the relation
 row1 = {
     'enrollmentID' : String('A.enrollmentID'),
@@ -168,8 +192,6 @@ print("Does the relation satisfy 2NF:", check_2nf(s, primary_key, non_prime_attr
 """
 
 THIRD_NF = '''
-### Determinine 3NF
-
 Great! Now all that's left is to prove whether or not the relation satisfies 3NF.
 
 Recall that a relation satisfies 3NF if there are no transitive dependencies. 
@@ -186,7 +208,11 @@ Your function should return False for the example relation.
 '''
 
 THIRD_NF_CODE = '''
-def check_3nf(s, non_prime_attributes):
+def check_3nf(s, primary_key, non_prime_attributes):
+    # Check that the relation is in 2NF
+    if True: # REPLACE THIS LINE
+        return False
+
     # Check all pairs of non-prime attributes for transitive dependencies
     for attribute1 in non_prime_attributes:
         for attribute2 in non_prime_attributes:
@@ -200,12 +226,16 @@ print("Relation satisfies 3NF:", check_3nf(s, non_prime_attributes))
 mynotebook = nbf.v4.new_notebook()
 
 mynotebook['cells'] = [nbf.v4.new_markdown_cell(INTRO),
+                       nbf.v4.new_markdown_cell(RELATIONS),
+                       nbf.v4.new_code_cell(RELATIONS_CODE),
                        nbf.v4.new_markdown_cell(DEPENDENCIES),
                        nbf.v4.new_code_cell(DEPENDENCIES_CODE),
-                       nbf.v4.new_markdown_cell(CHECK_FOR_DEPENDENCY),
-                       nbf.v4.new_code_cell(CHECK_FOR_DEPENDENCY_CODE),
                        nbf.v4.new_markdown_cell(SECOND_NF),
                        nbf.v4.new_code_cell(SECOND_NF_CODE),
+                       nbf.v4.new_markdown_cell(SECOND_NF_OUTRO),
+                       nbf.v4.new_markdown_cell(THIRD_NF_INTRO),
+                       nbf.v4.new_markdown_cell(THIRD_NF_2NF),
+                       nbf.v4.new_code_cell(THIRD_NF_2NF_CODE),
                        nbf.v4.new_markdown_cell(THIRD_NF),
                        nbf.v4.new_code_cell(THIRD_NF_CODE)]
 

@@ -5,7 +5,7 @@ import nbformat as nbf
 INTRO = """
 ## Database Normalization in Z3
 
-In order to determine whether or not a relation is normalized in second normal form, we must first know the functional dependencies.
+In order to determine whether or not a relation is normalized, we must first know the functional dependencies.
 Below is an example relation with 4 attributes:
 
 $$ R_1(\\underline{studentID}, \\underline{courseID}, studentName, courseFee) $$
@@ -105,62 +105,10 @@ s.add( functional_dependency('studentID', 'studentName') )
 
 # Check if the FD exists:
 print("studentID -> studentName :", has_fd(s, 'studentID', 'studentName'))
+s.add( functional_dependency('courseID', 'courseFee') )
 
 # Check for a non-existent FD:
 print("studentID -> courseFee :", has_fd(s, 'studentID', 'courseFee'))
-"""
-
-SECOND_NF = """
-Now that we are able to represent functional dependencies, we can write a function to determine if a relation is in 2NF!
-
-Recall that a relation is in 2NF if no partial dependencies exist. 
-That is, every attribute that is not in the primary key must depend on *every* attribute in the primary key.
-
-Let's take a look at the example again:
-
-$$ R_1(\\underline{studentID}, \\underline{courseID}, studentName, courseFee) $$
-
-With the following functional dependencies:
-
-$$ studentID \\rightarrow studentName $$
-$$ courseID \\rightarrow courseFee $$
-
-In order to prove whether or not the relation is normalize, we must check that studentName and courseFee depend on *both* studentID and courseID.
-**Complete the code below** to determine if the relation is in 2NF
-"""
-
-SECOND_NF_CODE = """
-# Create variables to represent two arbitrary rows in the relation
-row1 = {
-    'studentID' : String('A.studentID'),
-    'courseID' : String('A.courseID'),
-    'studentName' : String('A.studentName'),
-    'courseFee' : String('A.courseFee'),
-}
-row2 = {
-    'studentID' : String('B.studentID'),
-    'courseID' : String('B.courseID'),
-    'studentName' : String('B.studentName'),
-    'courseFee' : String('B.courseFee'),
-}
-
-# Determine the primary key
-primary_key = ['studentID', 'courseID']
-non_prime_attributes = ['studentName', 'courseFee']
-
-# Initialize solver
-s = Solver()
-
-# Create the functional dependencies:
-s.add( False ) # REPLACE THESE LINES
-s.add( False ) # REPLACE THESE LINES
-
-# Check that each non-prime attribute depends on the entire primary key
-for non_prime in non_prime_attributes:
-    for prime in primary_key:
-        dependency_exists = False # REPLACE THIS LINE
-        if not dependency_exists:
-            print("The relation has a partial dependency.", non_prime, "does not depend on primary attribute", prime)
 """
 
 ### Build the notebook ###
@@ -172,9 +120,7 @@ mynotebook['cells'] = [nbf.v4.new_markdown_cell(INTRO),
                        nbf.v4.new_markdown_cell(DEPENDENCIES),
                        nbf.v4.new_code_cell(DEPENDENCIES_CODE),
                        nbf.v4.new_markdown_cell(CHECK_FOR_DEPENDENCY),
-                       nbf.v4.new_code_cell(CHECK_FOR_DEPENDENCY_CODE),
-                       nbf.v4.new_markdown_cell(SECOND_NF),
-                       nbf.v4.new_code_cell(SECOND_NF_CODE)]
+                       nbf.v4.new_code_cell(CHECK_FOR_DEPENDENCY_CODE)]
 
 nbf.validator.normalize( mynotebook )
 nbf.validate( mynotebook )
