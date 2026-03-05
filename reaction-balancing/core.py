@@ -102,7 +102,7 @@ REACTION2_CODE = '''
 s = Solver()
 
 # Initialize variables
-Propanol = Int('Propanol') # Coefficient of Propanol
+C3H7OH = Int('C3H7OH')     # Coefficient of Propanol
 O2 = Int('O2')             # Coefficient of O2
 CO2 = Int('CO2')           # Coefficient of CO2
 H2O = Int('H2O')           # Coefficient of H2O
@@ -113,7 +113,7 @@ s.add( False ) # Balance hydrogen
 s.add( False ) # Balance oxygen
 
 # Ensure each coefficient is positive!
-s.add( Propanol >= 1 )
+s.add( C3H7OH >= 1 )
 s.add( O2 >= 1 )
 s.add( CO2 >= 1 )
 s.add( H2O >= 1 )
