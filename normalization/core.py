@@ -17,7 +17,7 @@ $$ courseID \\rightarrow courseFee $$
 
 It is clear that this relation is not normalized, because studentName and courseFee have partial dependcies on the primary key. We will use Z3 to prove this"""
 
-DEPENDENCIES = """
+RELATIONS = """
 ### Encoding Functional Dependencies
 
 For two attributes X and Y, we say that X determines Y, $ X \\rightarrow Y $, if for any two rows in the relation:
@@ -26,10 +26,13 @@ $$ row1.X = row2.X \\rightarrow row1.Y = row2.Y $$
 
 In other words, each value of X uniquely determines a value for Y.
 
-**Complete the code below** to create a function that encodes a functional dependendency in Z3.
+In order to represent functional dependencies in Z3, we first need to create variables to represent two rows in the relation.
+In the code below, we have created one variable for each attribute, for two arbitrary rows 'A' and 'B'.
+
+No code is needed for this cell, **simply run the cell to create the variables**.
 """
 
-DEPENDENCIES_CODE = """
+RELATIONS_CODE = """
 # Create variables to represent two arbitrary rows in the relation
 row1 = {
     'studentID' : String('A.studentID'),
@@ -43,7 +46,16 @@ row2 = {
     'studentName' : String('B.studentName'),
     'courseFee' : String('B.courseFee'),
 }
+"""
 
+DEPENDENCIES = """
+Next, we will write a function to represent a functional dependency in the relation.
+We will do this using the definition of a functional dependency.
+
+**Complete the code below** to create a function that encodes a functional dependendency in Z3.
+"""
+
+DEPENDENCIES_CODE = """
 def functional_dependency(X, Y):
     return Implies( False ) # REPLACE THIS LINE    
 
@@ -53,7 +65,7 @@ s = Solver()
 # Add two functional dependencies
 s.add( functional_dependency('studentID', 'studentName') )
 s.add( functional_dependency('courseID', 'courseFee') )
-    
+
 showSolver(s)
 """
 
@@ -155,6 +167,8 @@ for non_prime in non_prime_attributes:
 mynotebook = nbf.v4.new_notebook()
 
 mynotebook['cells'] = [nbf.v4.new_markdown_cell(INTRO),
+                       nbf.v4.new_markdown_cell(RELATIONS),
+                       nbf.v4.new_code_cell(RELATIONS_CODE),
                        nbf.v4.new_markdown_cell(DEPENDENCIES),
                        nbf.v4.new_code_cell(DEPENDENCIES_CODE),
                        nbf.v4.new_markdown_cell(CHECK_FOR_DEPENDENCY),
