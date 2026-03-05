@@ -61,13 +61,13 @@ These functions are provided below.
 DEPENDENCIES_CODE = """
 # These functions should be imported from another file
 def functional_dependency(X, Y):
-    return Implies( row1.X == row2.X, row1.Y == row2.Y ) 
+    return Implies( row1[X] == row2[X], row1[Y] == row2[Y] ) 
 
 def has_fd(s, X, Y):
     s.push()
 
     s.add(
-        And( row1.X == row2.X, row1.Y != row2.Y )
+        And( row1[X] == row2[X], row1[Y] != row2[Y] )
     )
 
     result = s.check() == unsat # If we can't find a counterexample, then X -> Y
