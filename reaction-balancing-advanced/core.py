@@ -51,6 +51,8 @@ To do this, we will use a dictionary to store each half of the reaction.
 
 In our example reaction, we have two reactants and one product, which we can represent as shown below.
 Note that for each compound, we also need to know how much of each element is in it.
+
+No code is needed for this cell, **simply run the cell to create the variables**.
 '''
 
 STORING_EQ_CODE = '''
