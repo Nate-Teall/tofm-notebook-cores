@@ -19,7 +19,7 @@ Just as before, the first thing we must do is determine the functional dependenc
 
 RELATIONS = """
 In order to represent functional dependencies in Z3, we first need to create variables to represent two rows in the relation.
-In the code below, we have created one variable for each attribute, for two arbitrary rows 'A' and 'B'.
+In the code below, we have created one variable for each attribute, for two arbitrary entities 'row1' and 'row2'.
 
 No code is needed for this cell, **simply run the cell to create the variables**.
 """
@@ -217,7 +217,7 @@ def check_3nf(s, primary_key, non_prime_attributes):
     if True: # REPLACE THIS LINE
         return False
 
-    # Check all pairs of non-prime attributes for transitive dependencies
+    # Check if there is a dependency between any pair of non-prime attributes
     for attribute1 in non_prime_attributes:
         for attribute2 in non_prime_attributes:
             if True: # REPLACE THESE LINES

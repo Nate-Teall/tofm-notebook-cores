@@ -24,10 +24,10 @@ For two attributes X and Y, we say that X determines Y, $ X \\rightarrow Y $, if
 
 $$ row1.X = row2.X \\rightarrow row1.Y = row2.Y $$
 
-In other words, each value of X uniquely determines a value for Y.
+In other words, if two entities have the same value for attribute X, then they must have the same value in Y. 
 
 In order to represent functional dependencies in Z3, we first need to create variables to represent two rows in the relation.
-In the code below, we have created one variable for each attribute, for two arbitrary rows 'A' and 'B'.
+In the code below, we have created one variable for each attribute, for two arbitrary entities 'row1' and 'row2'.
 
 No code is needed for this cell, **simply run the cell to create the variables**.
 """

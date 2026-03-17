@@ -42,13 +42,14 @@ $$H_2 + O_2 \\rightarrow H_2O$$
 
 To balance the reaction, we need to find coefficients for each compound that balances all elements.
 
-To balance oxygen, the number of atoms of oxygen must be the same on both sides of the reaction. So, we will use this equation to model the amount on each side. 
+To balance oxygen, the number of atoms of oxygen must be the same on both sides of the reaction. So, we will use this equation to model the amount on each side.
+Here, $ C_X $ represents of the coefficient of that molecule.
 
-$$2 \\cdot H_2 = H_2O$$
+$$2 \\cdot C_{H_2} = C_{H_2O}$$
 
 Similarly, we can use this equation to balance hydrogen:
 
-$$2 \\cdot H_2 = 2 \\cdot H_2O$$
+$$2 \\cdot C_{H_2} = 2 \\cdot C_{H_2O}$$
 
 **Replace the line in the code below** to use Z3 to find the coefficients. 
 '''
@@ -94,6 +95,7 @@ $$C_3H_7OH + O_2 \\rightarrow CO_2 + H_2O$$
 
 To balance this reaction, we will need 4 coefficients, one for each compound. 
 Because this reaction conatins 3 elements (C, H, and O), we will need three equations. One to balance each of them.
+
 **Replace the corresponding lines in the cell below** to balance the reaction.
 '''
 
@@ -102,10 +104,10 @@ REACTION2_CODE = '''
 s = Solver()
 
 # Initialize variables
-C3H7OH = Int('C_{C3H7OH}')     # Coefficient of Propanol
-O2 = Int('C_{O2}')             # Coefficient of O2
-CO2 = Int('C_{O2}')           # Coefficient of CO2
-H2O = Int('C_{H2O}')           # Coefficient of H2O
+C3H7OH = Int('C_{C3H7OH}') # Coefficient of Propanol
+O2 = Int('C_{O2}')         # Coefficient of O2
+CO2 = Int('C_{O2}')        # Coefficient of CO2
+H2O = Int('C_{H2O}')       # Coefficient of H2O
 
 # REPLACE THE THREE LINES BELOW
 s.add( False ) # Balance carbon

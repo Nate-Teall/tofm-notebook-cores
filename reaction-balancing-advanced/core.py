@@ -50,7 +50,7 @@ To write this program, we need a way to represent our reaction in python.
 To do this, we will use a dictionary to store each half of the reaction. 
 
 In our example reaction, we have two reactants and one product, which we can represent as shown below.
-Note that for each compound, we also need to know how much of each element is in it.
+Note that for each compound, we create another dictionary that states how much of each element is in it.
 
 No code is needed for this cell, **simply run the cell to create the variables**.
 '''
@@ -62,7 +62,7 @@ reactants = {
 }
 
 products = {
-  'H2O': {'H': 2, 'O': 1}
+  'H2O': {'H': 2, 'O': 1} # 'Each molecule of H2O contains 2 hydrogen and 1 oxygen'
 }
 '''
 
@@ -80,6 +80,9 @@ For our example reaction:
 $$H_2 + O_2 \\rightarrow  H_2O$$
 
 We need a coefficient for $ H_2 $ and $ O_2 $, as well as an equation to represent the number of hydrogen and oxygen atoms on the reactants side.
+
+The equation should be the coefficient of the molecule times the amount of that element in that molecule.
+
 **Replace lines in the code below** to finish this function.
 '''
 
@@ -87,20 +90,21 @@ COUNT_ELEMENTS_CODE = '''
 def count_elements(reaction_half):
   # Create a list of coefficients
   coefficients = []
-  # Create a dictionary that maps an element to an equation to calculate it's total on this half
+  # Create a dictionary that maps an element to an equation that calculates the number of atoms of that element
   element_totals = {}
   
-  for compound in reaction_half:
+  for molecule in reaction_half:
   
     # Create a z3 variable for each coefficient
     coefficient = False # REPLACE THIS LINE
+
     coefficients.append( coefficient ) 
 
-    # Count the amount of each element in this compound
-    elements = reaction_half[compound]
+    elements = reaction_half[molecule]
     for element in elements:
+    
+      # Create an equation that calculates the amount atoms of this element in the molecule
       amount_of_element = elements[element]
-
       total = False # REPLACE THIS LINE
 
       if element not in element_totals:
@@ -126,7 +130,7 @@ BALANCE_REACTION_TEXT = '''
 ### Balancing Both Sides
 
 Great! All that is left is to use this function to balance both halves of the reaction. 
-Remember, in order to balance the reaction, we must ensure the amounts of an element on both sides are *equal*. 
+Remember, in order to balance the reaction, we must ensure the amount of an element on both sides is *equal*. 
 
 **Replace lines in the code below** to finish the full function
 '''
