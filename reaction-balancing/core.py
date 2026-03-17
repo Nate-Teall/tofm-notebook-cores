@@ -60,9 +60,9 @@ REACTION1_CODE = '''
 s = Solver()
 
 # Initialize variables
-H2 = Int('H2')   # Coefficient of H2
-O2 = Int('O2')   # Coefficient of O2
-H2O = Int('H2O') # Coefficient of H2O
+H2 = Int('C_{H2}')   # Coefficient of H2
+O2 = Int('C_{O2}')   # Coefficient of O2
+H2O = Int('C_{H2O}') # Coefficient of H2O
 
 # Add the equation to balance oxygen
 s.add( 2*O2 == H2O ) 
@@ -102,10 +102,10 @@ REACTION2_CODE = '''
 s = Solver()
 
 # Initialize variables
-C3H7OH = Int('C3H7OH')     # Coefficient of Propanol
-O2 = Int('O2')             # Coefficient of O2
-CO2 = Int('CO2')           # Coefficient of CO2
-H2O = Int('H2O')           # Coefficient of H2O
+C3H7OH = Int('C_{C3H7OH}')     # Coefficient of Propanol
+O2 = Int('C_{O2}')             # Coefficient of O2
+CO2 = Int('C_{O2}')           # Coefficient of CO2
+H2O = Int('C_{H2O}')           # Coefficient of H2O
 
 # REPLACE THE THREE LINES BELOW
 s.add( False ) # Balance carbon
