@@ -19,7 +19,7 @@ We will determine the limiting reactant when given 2 moles of propane and 5 mole
 To model the problem, we must create variables to represent three things: The starting amount of each reactant in moles, the amount of each reactant used, and the amount of products produced.
 '''
 
-VARIABLES = ''' # Initialize Solver
+VARIABLES = '''# Initialize Solver
 s = Solver()
 
 # 1) Variables to represent the initial amount of propane and oxygen
@@ -27,21 +27,22 @@ initial_C3H8 = 2
 initial_O2 = 8
 
 # 2) Variables to represent the amount of propane and oxygen consumed
-consumed_C3H8 = Real('C_{C_3H_8}')
-consumed_O2 = Real('C_{O_2}')
+consumed_C3H8 = Real('Consumed_{C_3H_8}')
+consumed_O2 = Real('Consumed_{O_2}')
 
 # 3) Variables to represent the final amount of CO2 and H2O
-produced_CO2 = Real('P_{CO_2}')
-produced_H2O = Real('P_{H_2O}')'''
+produced_CO2 = Real('Produced_{CO_2}')
+produced_H2O = Real('Produced_{H_2O}')'''
 
 EXTENT = '''Lastly, we will use a variable to represent the "extent" of the reaction. 
 This represents how much of the reaction can be completed with the given amounts.
 
-For example, in our reaction, if we were given one mole of $C_3H_8$ and five moles $O_2$, the full reaction can completed once, so the extent is one.'''
+For example, in our reaction, if we were given one mole of $C_3H_8$ and five moles $O_2$, the full reaction can completed once, so the extent is one.
+If we were given half as much of each, the extent would be one half.'''
 
 EXTENT_CODE = '''extent = Real('X')'''
 
-CONSTRAINTS = '''Great! Now we need to do is add constraints to the solver.
+CONSTRAINTS = '''Great! Now we need to add constraints to the solver.
 
 First, we must determine the amount of reactants used, and products created, based on the extent of the reaction.
 
@@ -52,8 +53,8 @@ s.add(consumed_C3H8 == extent * 1)
 s.add(consumed_O2 == 0) # REPLACE THIS LINE
 
 # We use a similar process to determine how much of each product was created, based on the extent of the reaction.
-s.add(produced_CO2 == extent * 3)
-s.add(produced_H2O == 0) # REPLACE THIS LINE'''
+s.add(extent * 3 == produced_CO2)
+s.add(0 == produced_H2O) # REPLACE THIS LINE'''
 
 LIMITING_LOGIC = '''Finally, the last thing to do is add the limiting reactant logic.
 The amount of reactants used cannot be more than what we are initially given.
@@ -88,7 +89,27 @@ opt.add(s.assertions())
 opt.maximize(extent)'''
 
 CHECK_OPT = '''print( opt.check() ) # check if solution exists'''
-MODEL_OPT = '''print( opt.model() ) # output solution'''
+
+MODEL = '''To better visualize the results, we have created a function to print the model.
+
+You should see that the limiting reactant was O2, as all 8 mols were consumed.'''
+
+MODEL_CODE = '''# THIS SHOULD BE IMPORTED
+def print_model(m):
+    extent = float(m[extent].as_decimal(5))
+    print(f"Reaction Extent: {extent}")
+    print(f"CO2 Produced: {m[produced_CO2].as_decimal(2)} mol")
+    print(f"H2O Produced: {m[produced_H2O].as_decimal(2)} mol")
+    print(f"Consumed C3H8: {m[consumed_C3H8].as_decimal(2)} mol")
+    print(f"Consumed O2: {m[consumed_O2].as_decimal(2)} mol\\n")
+
+    print(f"Remaining C3H8: {initial_C3H8 - float(m[consumed_C3H8].as_decimal(2))} mol")
+    print(f"Remaining O2: {initial_O2 - float(m[consumed_O2].as_decimal(2))} mol")
+
+m = opt.model()
+print_model(m)'''
+
+
 
 ### Build the notebook ###
 mynotebook = nbf.v4.new_notebook()
@@ -104,7 +125,8 @@ mynotebook['cells'] = [nbf.v4.new_markdown_cell(INTRO),
                        nbf.v4.new_markdown_cell(OPTIMIZER),
                        nbf.v4.new_code_cell(OPTIMIZER_CODE),
                        nbf.v4.new_code_cell(CHECK_OPT),
-                       nbf.v4.new_code_cell(MODEL_OPT)]
+                       nbf.v4.new_markdown_cell(MODEL),
+                       nbf.v4.new_code_cell(MODEL_CODE)]
 
 nbf.validator.normalize( mynotebook )
 nbf.validate( mynotebook )
