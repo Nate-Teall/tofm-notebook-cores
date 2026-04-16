@@ -26,12 +26,12 @@ total_valence = 16
 
 # Number Lone Pairs
 C = Int('C')
-O2 = Int('O^2')
 O1 = Int('O^1')
+O2 = Int('O^2')
 
 # Number of Bond Pairs
-C_O1 = Int('C-O^1')
-C_O2 = Int('C-O^2')'''
+C_O1 = Int('CO^1')
+C_O2 = Int('CO^2')'''
 
 CONSTRAINTS = '''Great! Our next step is to add the constraints.
 
@@ -76,15 +76,58 @@ opt.minimize(abs(O2 - O1))'''
 
 SOLUTION = '''Now that we've created the solver, all that's left is to view the solution!'''
 
-CHECK = '''print( opt.check() ) # check if solution exists'''
+CHECK_OPT = '''print( opt.check() ) # check if solution exists'''
 
-MODEL = '''print( opt.model() ) # output solution'''
+MODEL_OPT = '''print( opt.model() ) # output solution'''
 
 VIEW = '''To better view the solution, we've defined a function to draw the structure'''
 
 VIEW_CODE = '''#draw_lewis(opt)'''
 
+NI3 = '''## Lewis Structure of Nitrogen Triiodide
 
+Great work! Next, lets try a slightly larger molecule, $ NI_3 $.
+
+In this molecule, nitrogen is the central atom, bonded to three iodine.
+
+**Replace lines in the code below** to create the solver for this molecule.'''
+
+NI3_CODE = '''# Initialize Solver
+s = Solver()
+
+# Set the total number of valence electrons
+total_valence = 0 # REPLACE THIS LINE
+
+# Number Lone Pairs
+N = Int('N')
+I1 = Int('I^1')
+I2 = Int('I^2')
+I3 = Int('I^3')
+
+# Number of Bond Pairs
+N_I1 = Int('NI^1')
+N_I2 = Int('NI^2')
+N_I3 = Int('NI^3')
+
+# 1) The number of electrons distributed must equal 16
+s.add((I1) * 2 == total_valence) # REPLACE THIS LINE
+
+# 2) The octet rule: Each atom must have 4 pairs in total, whether bond or lone pairs.
+s.add(False) # REPLACE THIS LINE
+s.add(False) # REPLACE THIS LINE
+s.add(False) # REPLACE THIS LINE
+s.add(False) # REPLACE THIS LINE
+
+# 3) Each bond must be at least a single bond
+s.add(False) # REPLACE THIS LINE
+s.add(False) # REPLACE THIS LINE
+s.add(False) # REPLACE THIS LINE
+
+# Let's view the solver 
+showSolver(s)'''
+
+CHECK = '''print( s.check() ) # check if solution exists'''
+MODEL = '''print( s.check() ) # output solution'''
 
 ### Build the notebook ###
 mynotebook = nbf.v4.new_notebook()
@@ -96,9 +139,14 @@ mynotebook['cells'] = [nbf.v4.new_markdown_cell(INTRO),
                        nbf.v4.new_markdown_cell(OPTIMIZER),
                        nbf.v4.new_code_cell(OPTIMIZER_CODE),
                        nbf.v4.new_markdown_cell(SOLUTION),
+                       nbf.v4.new_code_cell(CHECK_OPT),
+                       nbf.v4.new_code_cell(MODEL_OPT),
+                       nbf.v4.new_markdown_cell(VIEW),
+                       nbf.v4.new_code_cell(VIEW_CODE),
+                       nbf.v4.new_markdown_cell(NI3),
+                       nbf.v4.new_code_cell(NI3_CODE),
                        nbf.v4.new_code_cell(CHECK),
                        nbf.v4.new_code_cell(MODEL),
-                       nbf.v4.new_markdown_cell(VIEW),
                        nbf.v4.new_code_cell(VIEW_CODE)]
 
 nbf.validator.normalize( mynotebook )
