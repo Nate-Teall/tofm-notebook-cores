@@ -62,7 +62,7 @@ The amount of reactants used cannot be more than what we are initially given.
 **Replace the line below** to implement this in Z3.'''
 
 LIMITING_CODE = '''# Limiting Reactant Logic
-s.add(consumed_C3H8 <= initial_C3H8)
+s.add(consumed_C3H8 <= 0) # REPLACE THIS LINE
 s.add(False) # REPLACE THIS LINE
 
 # Let's view our solver so far
@@ -94,20 +94,20 @@ MODEL = '''To better visualize the results, we have created a function to print 
 
 You should see that the limiting reactant was O2, as all 8 mols were consumed.'''
 
-MODEL_CODE = '''# THIS SHOULD BE IMPORTED
-def print_model(m):
-    extent = float(m[extent].as_decimal(5))
-    print(f"Reaction Extent: {extent}")
-    print(f"CO2 Produced: {m[produced_CO2].as_decimal(2)} mol")
-    print(f"H2O Produced: {m[produced_H2O].as_decimal(2)} mol")
-    print(f"Consumed C3H8: {m[consumed_C3H8].as_decimal(2)} mol")
-    print(f"Consumed O2: {m[consumed_O2].as_decimal(2)} mol\\n")
-
-    print(f"Remaining C3H8: {initial_C3H8 - float(m[consumed_C3H8].as_decimal(2))} mol")
-    print(f"Remaining O2: {initial_O2 - float(m[consumed_O2].as_decimal(2))} mol")
-
+MODEL_CODE = '''
 m = opt.model()
-print_model(m)'''
+
+# THIS SHOULD BE IMPORTED
+extent = float(m[extent].as_decimal(5))
+print(f"Reaction Extent: {extent}")
+print(f"CO2 Produced: {m[produced_CO2].as_decimal(2)} mol")
+print(f"H2O Produced: {m[produced_H2O].as_decimal(2)} mol")
+print(f"Consumed C3H8: {m[consumed_C3H8].as_decimal(2)} mol")
+print(f"Consumed O2: {m[consumed_O2].as_decimal(2)} mol\\n")
+
+print(f"Remaining C3H8: {initial_C3H8 - float(m[consumed_C3H8].as_decimal(2))} mol")
+print(f"Remaining O2: {initial_O2 - float(m[consumed_O2].as_decimal(2))} mol")
+'''
 
 
 
