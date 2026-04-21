@@ -80,9 +80,98 @@ CHECK_OPT = '''print( opt.check() ) # check if solution exists'''
 
 MODEL_OPT = '''print( opt.model() ) # output solution'''
 
-VIEW = '''To better view the solution, we've defined a function to draw the structure'''
+VIEW = '''To better view the solution, we've defined a function to draw the structure. 
 
-VIEW_CODE = '''#draw_lewis(opt)'''
+NOTE: Bond angles are not accurate. This is only meant to display the electron placement.'''
+
+VIEW_CODE_OPT = '''m = opt.model()
+draw_lewis_from_model(m)'''
+
+VIEW_FUNCS = '''# Should be imported
+def draw_lewis_from_model(m):
+  """Converts a model to the format required by draw_lewis_structure"""
+  # List of elements
+  elements = []
+  # List of bond variables
+  bonds = []
+  lone_pairs = []
+
+  # Add element names and lone pairs to the list
+  for d in m.decls():
+    name = d.name()
+    if len(name) == 1 or name[1] == '^':
+      elements.append(name)
+      lone_pairs.append(m[d].as_long())
+
+  # Add bond pair counts
+  for d in m.decls():
+    name = d.name()
+    # Bond Pairs
+    if len(name) > 1 and name[1] != '^':
+      bonds.append((elements.index(name[0]), elements.index(name[1:4]), m[d].as_long()))
+  
+  draw_lewis_structure(elements, bonds, lone_pairs)
+
+
+# WRITTEN BY GEMINI
+def draw_lewis_structure(elements, bonds, lone_pairs):
+    fig, ax = plt.subplots(figsize=(3, 3))
+    ax.set_aspect('equal')
+    ax.axis('off')
+
+    # 1. Coordinate Setup (Circle Layout)
+    n = len(elements)
+    angles = np.linspace(0, 2 * np.pi, n, endpoint=False)
+    pos = {i: np.array([np.cos(a), np.sin(a)]) / 3 for i, a in enumerate(angles)}
+
+    # 2. Draw Bonds with Multi-bond Offsets
+    for idx1, idx2, count in bonds:
+        p1, p2 = pos[idx1], pos[idx2]
+        vec = p2 - p1
+        perp = np.array([-vec[1], vec[0]])
+        perp = perp / np.linalg.norm(perp) * 0.05
+
+        # Offset multi-bonds slightly so they don't overlap
+        offsets = np.linspace(-0.6, 0.6, count) if count > 1 else [0]
+        for opt in offsets:
+            shift = perp * opt
+            ax.plot([p1[0] + shift[0], p2[0] + shift[0]], 
+                    [p1[1] + shift[1], p2[1] + shift[1]], 
+                    color='black', lw=2, zorder=1)
+
+    # 3. Draw Atoms and Distributed Lone Pairs
+    for i, (el, lp_count) in enumerate(zip(elements, lone_pairs)):
+        x, y = pos[i]
+        ax.text(x, y, el[0], fontsize=28, fontweight='bold', ha='center', va='center', 
+                bbox=dict(facecolor='white', edgecolor='none', pad=1.5), zorder=2)
+
+        # Calculate angles to neighbors to find "open" slots
+        neighbor_angles = []
+        for b1, b2, _ in bonds:
+            if b1 == i: neighbor_angles.append(np.arctan2(pos[b2][1]-y, pos[b2][0]-x))
+            if b2 == i: neighbor_angles.append(np.arctan2(pos[b1][1]-y, pos[b1][0]-x))
+
+        # Standard slots: 0, 90, 180, 270 degrees
+        potential_slots = [0, np.pi/2, np.pi, 3*np.pi/2]
+        available_slots = []
+        
+        for slot in potential_slots:
+            # Only use slot if it's not pointing toward a bond
+            if not any(abs((slot - na + np.pi) % (2*np.pi) - np.pi) < 0.5 for na in neighbor_angles):
+                available_slots.append(slot)
+
+        # Draw lone pairs in the best available slots
+        for lp_idx in range(min(lp_count, len(available_slots))):
+            slot_angle = available_slots[lp_idx]
+            dist = 0.1
+            # The two dots of the pair are slightly separated perpendicular to the slot angle
+            dot_gap = 0.03
+            for side in [-1, 1]:
+                dx = x + dist * np.cos(slot_angle) + side * dot_gap * np.sin(slot_angle)
+                dy = y + dist * np.sin(slot_angle) - side * dot_gap * np.cos(slot_angle)
+                ax.scatter(dx, dy, s=40, color='red', zorder=3) # Red for visibility
+
+    plt.show()'''
 
 NI3 = '''## Lewis Structure of Nitrogen Triiodide
 
@@ -127,7 +216,12 @@ s.add(False) # REPLACE THIS LINE
 showSolver(s)'''
 
 CHECK = '''print( s.check() ) # check if solution exists'''
-MODEL = '''print( s.check() ) # output solution'''
+MODEL = '''print( s.model() ) # output solution'''
+
+VIEW_2 = '''When you think your solution is correct, use the cell below to visualize it.'''
+
+VIEW_CODE = '''m = opt.model()
+draw_lewis_from_model(m)'''
 
 ### Build the notebook ###
 mynotebook = nbf.v4.new_notebook()
@@ -142,11 +236,13 @@ mynotebook['cells'] = [nbf.v4.new_markdown_cell(INTRO),
                        nbf.v4.new_code_cell(CHECK_OPT),
                        nbf.v4.new_code_cell(MODEL_OPT),
                        nbf.v4.new_markdown_cell(VIEW),
-                       nbf.v4.new_code_cell(VIEW_CODE),
+                       nbf.v4.new_code_cell(VIEW_FUNCS),
+                       nbf.v4.new_code_cell(VIEW_CODE_OPT),
                        nbf.v4.new_markdown_cell(NI3),
                        nbf.v4.new_code_cell(NI3_CODE),
                        nbf.v4.new_code_cell(CHECK),
                        nbf.v4.new_code_cell(MODEL),
+                       nbf.v4.new_markdown_cell(VIEW_2),
                        nbf.v4.new_code_cell(VIEW_CODE)]
 
 nbf.validator.normalize( mynotebook )
