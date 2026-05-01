@@ -68,8 +68,8 @@ STEP_4_CODE = '''print( s.check() )'''
 VIEW_SOLS = '''Great! Now we can determine how many matchings there are, and visualize them. We have defined a function to find and show all matchings'''
 
 VIEW_SOLS_CODE = '''all_solutions = list_all_solutions(s, vars)
-print( 'Number of matchings:', len(all_sols) )
-draw_all_matchings(s, all_sols, 4)'''
+print( 'Number of matchings:', len(all_solutions) )
+draw_all_matchings(s, all_solutions, 4)'''
 
 PROBLEM_2 = '''Great! We have successfully determined the Z Index of this molecule.
 
@@ -86,7 +86,7 @@ e12 = Bool('e_{12}')
 # We follow the same conventiion for all other edges in the graph
 e23 = Bool('e_{23}')
 e34 = Bool('e_{34}')
-e25 = Bool('e_{45}')
+e45 = Bool('e_{45}')
 e26 = Bool('e_{26}')
 vars = [e12, e23, e34, e45, e26]
 
@@ -106,8 +106,8 @@ showSolver(s)
 '''
 
 VIEW_SOLS_2_CODE = '''all_solutions = list_all_solutions(s, vars)
-print( 'Number of matchings:', len(all_sols) )
-draw_all_matchings(s, all_sols, 5)'''
+print( 'Number of matchings:', len(all_solutions) )
+draw_all_matchings(s, all_solutions, 5)'''
 
 PROBLEM_3 = '''Lastly, let's determine the Z Index of one more isomer, and compare it to their boiling points
 
@@ -124,8 +124,8 @@ e12 = Bool('e_{12}')
 # We follow the same conventiion for all other edges in the graph
 e23 = Bool('e_{23}')
 e34 = Bool('e_{34}')
-e25 = Bool('e_{45}')
-e26 = Bool('e_{56}')
+e45 = Bool('e_{45}')
+e56 = Bool('e_{56}')
 vars = [e12, e23, e34, e45, e56]
 
 # Carbon atom 2 can have at most one edge adjacent to it in the matching
@@ -146,8 +146,8 @@ s.add(False)
 showSolver(s)'''
 
 VIEW_SOLS_3_CODE = '''all_solutions = list_all_solutions(s, vars)
-print( 'Number of matchings:', len(all_sols) )
-draw_all_matchings(s, all_sols, 6)'''
+print( 'Number of matchings:', len(all_solutions) )
+draw_all_matchings(s, all_solutions, 6)'''
 
 CONCLUSION = '''Great! Now we can compare the results to show that the Z-Index correlates to boiling point.
 | Isomer | Z Index | Boiling Point |
