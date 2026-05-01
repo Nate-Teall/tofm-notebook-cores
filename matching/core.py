@@ -240,4 +240,4 @@ mynotebook['cells'] = [nbf.v4.new_code_cell(EXTRA_IMPORTS),
 
 nbf.validator.normalize( mynotebook )
 nbf.validate( mynotebook )
-nbf.write( mynotebook, "matching/Z-INDEX.ipynb" )
+nbf.write( mynotebook, "matching/Z-INDEX-core.ipynb" )
