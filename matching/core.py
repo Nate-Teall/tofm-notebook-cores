@@ -9,7 +9,7 @@ from tofmcore import showSolver
 EXTRA_IMPORTS = '''### SHOULD BE IMPORTED ###
 def draw_all_matchings(s, all_sols, num_center):
   # Draw in a grid with 3 columns
-  rows = len(all_sols) // 3
+  rows = (len(all_sols) // 3) + 1
   fig, axs = plt.subplots(rows,3, figsize=(12,12))
   axes = axs.flatten()
 
@@ -147,13 +147,13 @@ e26 = Bool('e_{26}')
 vars = [e12, e23, e34, e45, e26]
 
 # Carbon atom 2 can have at most one edge adjacent to it in the matching
-s.add(False)
+s.add(False) # REPLACE THIS LINE
 
 # Carbon atom 3 can have at most one edge adjacent to it in the matching
-s.add(False)
+s.add(False) # REPLACE THIS LINE
 
 # Do the same for Carbon 4
-s.add(False)
+s.add(False) # REPLACE THIS LINE
 
 # The rest of the atoms have only one edge
 
@@ -185,16 +185,16 @@ e56 = Bool('e_{56}')
 vars = [e12, e23, e34, e45, e56]
 
 # Carbon atom 2 can have at most one edge adjacent to it in the matching
-s.add(False)
+s.add(False) # REPLACE THIS LINE
 
 # Carbon atom 3 can have at most one edge adjacent to it in the matching
-s.add(False)
+s.add(False) # REPLACE THIS LINE
 
 # Do the same for Carbon 4
-s.add(False)
+s.add(False) # REPLACE THIS LINE
 
 # Do the same for Carbon 5
-s.add(False)
+s.add(False) # REPLACE THIS LINE
 
 # The rest of the atoms have only one edge
 
