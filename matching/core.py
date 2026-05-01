@@ -6,6 +6,62 @@ from z3 import *
 from tofmcore import showSolver
 '''
 
+EXTRA_IMPORTS = '''### SHOULD BE IMPORTED ###
+def draw_all_matchings(s, all_sols, num_center):
+  # Draw in a grid with 3 columns
+  rows = len(all_sols) // 3
+  fig, axs = plt.subplots(rows,3, figsize=(12,12))
+  axes = axs.flatten()
+
+  for i, sol in enumerate(all_sols):
+    draw_single_matching(sol, axes[i], num_center)
+
+def draw_single_matching(m, ax, num_center):
+  # Create the edges and the matchings from the solution
+  edges = []
+  matching = []
+  for i in m:
+    val = m[i]
+    a = str(i)[3]
+    b = str(i)[4]
+    edges.append((a, b))
+    if val:
+      matching.append((a, b))
+
+  # Create the graph from the edges.
+  G = nx.Graph()
+  G.add_edges_from(sorted(edges)) # Sorting ensures consisten layout of nodes
+  edge_colors = ['red' if e in matching or (e[1], e[0]) in matching else 'black' for e in G.edges()]
+
+  # Draw graph aligned to grid
+  draw_chemical_graph(G, edge_colors, [str(i+1) for i in range(num_center)], ax)
+
+### Written by Gemini ###
+def draw_chemical_graph(G, edge_colors, centerline_nodes, ax):
+    """
+    centerline_nodes: a list of nodes to be placed on the y=0 axis.
+    """
+    pos = {}
+
+    # 1. Position the centerline nodes
+    for i, node in enumerate(centerline_nodes):
+        pos[node] = (i, 0)
+
+    # 2. Position the children above/below
+    for parent in centerline_nodes:
+        # Find neighbors not already in the centerline
+        children = [n for n in G.neighbors(parent) if n not in centerline_nodes]
+
+        for i, child in enumerate(children):
+            # Alternate: even index above (1), odd index below (-1)
+            x_offset = pos[parent][0]
+            y_offset = 1 if i % 2 == 0 else -1
+            pos[child] = (x_offset, y_offset)
+
+    # Draw the graph
+    nx.draw(G, pos, with_labels=True, node_size=700,
+            node_color='white', edge_color=edge_colors, ax=ax)'''
+
 INTRO = '''## Matching using Z3
 
 In this notebook, we will look at an application of the matching problem in chemistry. 
@@ -159,7 +215,8 @@ CONCLUSION = '''Great! Now we can compare the results to show that the Z-Index c
 ### Build the notebook ###
 mynotebook = nbf.v4.new_notebook()
 
-mynotebook['cells'] = [nbf.v4.new_markdown_cell(INTRO),
+mynotebook['cells'] = [nbf.v4.new_code_cell(EXTRA_IMPORTS),
+                       nbf.v4.new_markdown_cell(INTRO),
                        nbf.v4.new_markdown_cell(CHEMICAL_GRAPH),
                        nbf.v4.new_markdown_cell(STEP_1),
                        nbf.v4.new_code_cell(STEP_1_CODE),
