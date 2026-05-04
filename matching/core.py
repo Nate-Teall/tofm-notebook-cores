@@ -1,10 +1,50 @@
 import nbformat as nbf
+import base64
 
 IMPORTS = '''!pip install z3-solver
 !pip install git+https://github.com/crrivero/FormalMethodsTasting.git#subdirectory=core
 from z3 import *
 from tofmcore import showSolver
 '''
+
+# Get image data for displaying molecule structures
+with open("matching/isomer1.png", "rb") as f:
+    image_bytes = f.read()
+    encoded_img = base64.b64encode(image_bytes).decode('utf-8')
+
+isomer1 = f"data:image/png;base64,{encoded_img}"
+
+with open("matching/isomer2.jpg", "rb") as f:
+    image_bytes = f.read()
+    encoded_img = base64.b64encode(image_bytes).decode('utf-8')
+
+isomer2 = f"data:image/png;base64,{encoded_img}"
+
+with open("matching/isomer3.png", "rb") as f:
+    image_bytes = f.read()
+    encoded_img = base64.b64encode(image_bytes).decode('utf-8')
+
+isomer3 = f"data:image/png;base64,{encoded_img}"
+
+# Get image data for displaying chemical graphs
+with open("matching/graph1.png", "rb") as f:
+    image_bytes = f.read()
+    encoded_img = base64.b64encode(image_bytes).decode('utf-8')
+
+graph1 = f"data:image/png;base64,{encoded_img}"
+
+with open("matching/graph2.png", "rb") as f:
+    image_bytes = f.read()
+    encoded_img = base64.b64encode(image_bytes).decode('utf-8')
+
+graph2 = f"data:image/png;base64,{encoded_img}"
+
+with open("matching/graph3.png", "rb") as f:
+    image_bytes = f.read()
+    encoded_img = base64.b64encode(image_bytes).decode('utf-8')
+
+graph3 = f"data:image/png;base64,{encoded_img}"
+
 
 EXTRA_IMPORTS = '''### SHOULD BE IMPORTED ###
 def draw_all_matchings(s, all_sols, num_center):
@@ -62,24 +102,43 @@ def draw_chemical_graph(G, edge_colors, centerline_nodes, ax):
     nx.draw(G, pos, with_labels=True, node_size=700,
             node_color='white', edge_color=edge_colors, ax=ax)'''
 
-INTRO = '''## Matching using Z3
+INTRO = f'''## Matching using Z3
 
 In this notebook, we will look at an application of the matching problem in chemistry. 
 We will see how the Z-index chemical graph corresponds to the boiling point of the molecule.
 
 The molecule we will be looking at are three different isomers of Hexane, $ C_6H_{14} $:
 
-IMAGE HERE
+<center>
+
+Isomer 1:
+
+![Isomer 1]({isomer1})
+
+Isomer 2:
+
+![Isomer 2]({isomer2})
+
+Isomer 3:
+
+![Isomer 3]({isomer3})
+
+</center>
+
 '''
 
-CHEMICAL_GRAPH = '''### The Z Index
+CHEMICAL_GRAPH = f'''### The Z Index
 
 The Z Index of a molecule is the number of matchings within its chemical graph. 
 A chemical graph is structure where the nodes represent atoms, and edges represent the bonds. Hydrogen atoms are excluded.
 
-Below is the chemical graph of the first isomer we will be looking at:
+Below is the chemical graph of the first isomer we will be looking at. Note that each carbon atom is numbered.
 
-IMAGE HERE
+<center>
+
+![Graph 1]({graph1})
+
+</center>
 
 A matching is a selection of the edges such each node has at most one of their edges selected. We will use Z3 to find all possible matchings for this isomer. 
 '''
@@ -127,11 +186,16 @@ VIEW_SOLS_CODE = '''all_solutions = list_all_solutions(s, vars)
 print( 'Number of matchings:', len(all_solutions) )
 draw_all_matchings(s, all_solutions, 4)'''
 
-PROBLEM_2 = '''Great! We have successfully determined the Z Index of this molecule.
+PROBLEM_2 = f'''Great! We have successfully determined the Z Index of this molecule.
 
-Now its your turn! **Complete the code below** to determine the Z Index of the next isomer:
+Now its your turn! **Complete the code below** to determine the Z Index of the next isomer. The chemical graph looks like this:
 
-IMAGE HERE'''
+<center>
+
+![Graph 2]({graph2})
+
+</center>
+'''
 
 PROBLEM_2_CODE = '''# Initialize Solver
 s = Solver()
@@ -165,11 +229,16 @@ VIEW_SOLS_2_CODE = '''all_solutions = list_all_solutions(s, vars)
 print( 'Number of matchings:', len(all_solutions) )
 draw_all_matchings(s, all_solutions, 5)'''
 
-PROBLEM_3 = '''Lastly, let's determine the Z Index of one more isomer, and compare it to their boiling points
+PROBLEM_3 = f'''Lastly, let's determine the Z Index of one more isomer, and compare it to their boiling points
 
-**Complete the code below** to determine the Z Index of the final isomer:
+**Complete the code below** to determine the Z Index of the final isomer. It is simply a chain of 6 carbon atoms:
 
-IMAGE HERE'''
+<center>
+
+![Graph 3]({graph3})
+
+</center>
+'''
 
 PROBLEM_3_CODE = '''# Initialize Solver
 s = Solver()
@@ -206,6 +275,10 @@ print( 'Number of matchings:', len(all_solutions) )
 draw_all_matchings(s, all_solutions, 6)'''
 
 CONCLUSION = '''Great! Now we can compare the results to show that the Z-Index correlates to boiling point.
+
+Note how the "flatter" molecules with less branches in their graph have a higher Z index. 
+Due to their shape, these molecules generally have stronger intermolecular forces and thus a higher boiling point.
+
 | Isomer | Z Index | Boiling Point |
 | ------ | ------- | ------------- |
 | 1      | 9       | 49.7          |
